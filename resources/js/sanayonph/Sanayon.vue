@@ -227,8 +227,12 @@
             {
                 this.$store.commit('store/setUser', this.$store.getters['auth/user']);
                 this.$store.commit('auth/setUser', null);
-                window.open(this.$router.options.base + '?signed-out=1', '_self');
-            },
+                setTimeout(() => {
+                    this.$store.commit('dialog/confirm/hide');
+                    this.$store.commit('dialog/message/hide');
+                }, 300);
+                window.open(this.$router.options.base + '?signed-out=1', '_self', null, true);
+            }
         },
         created() {
             // show dialog-loader while fetching a route view
