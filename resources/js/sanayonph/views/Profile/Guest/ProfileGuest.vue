@@ -1,6 +1,5 @@
 <template>
     <v-app>
-        <dialogs/>
         <toolbar-main
             :custom-title="`@${$store.getters['store/user'].username}`"
             :custom-back-route="{ name: 'shop' }"
@@ -86,7 +85,6 @@
     export default {
         name: 'ProfileGuest',
         components: {
-            'dialogs'      : () => import('../../../components/dialogs/Dialogs.vue'),
             'toolbar-main' : () => import('../../../components/toolbars/ToolbarMain.vue')
         },
         data() {

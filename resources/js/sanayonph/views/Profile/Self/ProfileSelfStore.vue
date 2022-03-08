@@ -1,6 +1,5 @@
 <template>
     <v-app>
-        <dialogs/>
         <toolbar-main></toolbar-main>
         <v-main class="secondary">
             <bg-secondary/>
@@ -25,7 +24,6 @@
         name: 'ProfileSelfStore',
         components: {
             'bg-secondary'   : () => import('../../../components/backgrounds/BackgroundSecondary.vue'),
-            'dialogs'     : () => import('../../../components/dialogs/Dialogs.vue'),
             'toolbar-main': () => import('../../../components/toolbars/ToolbarMain.vue')
         },
         data() {

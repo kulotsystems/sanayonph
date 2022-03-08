@@ -1,6 +1,5 @@
 <template>
     <v-app>
-        <dialogs/>
         <toolbar-main
             :custom-title="`@${$store.getters['store/user'].username} Product`"
         />
@@ -324,7 +323,6 @@
     export default {
         name: 'ProfileGuestStoreProductsDetails',
         components: {
-            'dialogs'         : () => import('../../../components/dialogs/Dialogs.vue'),
             'toolbar-main'    : () => import('../../../components/toolbars/ToolbarMain.vue'),
             'button-action'   : () => import('../../../components/buttons/ButtonAction.vue'),
             'store-link'      : () => import('../../../components/sheets/StoreLink.vue'),

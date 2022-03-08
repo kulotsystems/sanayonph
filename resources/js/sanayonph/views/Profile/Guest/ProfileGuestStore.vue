@@ -1,6 +1,5 @@
 <template>
     <v-app>
-        <dialogs/>
         <toolbar-main
             :custom-title="`@${$store.getters['store/user'].username} Store`"
             :custom-back-route="{ name: 'shop' }"
@@ -28,7 +27,6 @@
         name: 'ProfileGuestStore',
         components: {
             'bg-yellow'   : () => import('../../../components/backgrounds/BackgroundYellow.vue'),
-            'dialogs'     : () => import('../../../components/dialogs/Dialogs.vue'),
             'toolbar-main': () => import('../../../components/toolbars/ToolbarMain.vue'),
         },
         data() {

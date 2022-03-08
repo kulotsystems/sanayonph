@@ -1,6 +1,5 @@
 <template>
     <v-app>
-        <dialogs/>
         <toolbar-main>
             <!-- ADD PRODUCT BUTTON -->
             <div slot="fab">
@@ -121,7 +120,6 @@
         name: 'ProfileSelfStoreProducts',
         components: {
             'bg-secondary'   : () => import('../../../components/backgrounds/BackgroundSecondary.vue'),
-            'dialogs'        : () => import('../../../components/dialogs/Dialogs.vue'),
             'dialog-info'    : () => import('../../../components/dialogs/DialogInfo.vue'),
             'toolbar-main'   : () => import('../../../components/toolbars/ToolbarMain.vue'),
             'button-floating': () => import('../../../components/buttons/ButtonFloating.vue'),

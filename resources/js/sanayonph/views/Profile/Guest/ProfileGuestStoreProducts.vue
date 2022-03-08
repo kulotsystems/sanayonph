@@ -1,6 +1,5 @@
 <template>
     <v-app>
-        <dialogs/>
         <toolbar-main
             :custom-title="`@${$store.getters['store/user'].username} Products`"
         />
@@ -115,7 +114,6 @@
         name: 'ProfileGuestStoreProducts',
         components: {
             'bg-yellow'   : () => import('../../../components/backgrounds/BackgroundYellow.vue'),
-            'dialogs'     : () => import('../../../components/dialogs/Dialogs.vue'),
             'dialog-info' : () => import('../../../components/dialogs/DialogInfo.vue'),
             'toolbar-main': () => import('../../../components/toolbars/ToolbarMain.vue')
         },

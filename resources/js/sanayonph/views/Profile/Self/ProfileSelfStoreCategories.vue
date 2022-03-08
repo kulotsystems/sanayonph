@@ -1,6 +1,5 @@
 <template>
     <v-app>
-        <dialogs/>
         <toolbar-main>
             <!-- ADD CATEGORY BUTTON -->
             <div slot="fab">
@@ -53,7 +52,6 @@
         name: 'ProfileSelfStoreCategories',
         components: {
             'bg-secondary'   : () => import('../../../components/backgrounds/BackgroundSecondary.vue'),
-            'dialogs'        : () => import('../../../components/dialogs/Dialogs.vue'),
             'toolbar-main'   : () => import('../../../components/toolbars/ToolbarMain.vue'),
             'button-floating': () => import('../../../components/buttons/ButtonFloating.vue'),
         },

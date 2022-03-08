@@ -1,6 +1,5 @@
 <template>
     <v-app>
-        <dialogs/>
         <snackbar-bottom/>
         <toolbar-main>
             <div slot="menus">
@@ -107,7 +106,6 @@
     export default {
         name: 'Profile',
         components: {
-            'dialogs'        : () => import('../../../components/dialogs/Dialogs.vue'),
             'snackbar-bottom': () => import('../../../components/snackbars/SnackbarBottom.vue'),
             'toolbar-main'   : () => import('../../../components/toolbars/ToolbarMain.vue'),
             'nav-bottom'     : () => import('../../../components/navs/NavBottom.vue'),
