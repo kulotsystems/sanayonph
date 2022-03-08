@@ -145,7 +145,8 @@
         },
         watch: {
             toggleTry() {
-                this.signIn();
+                if(this.$refs.signInForm != null)
+                    this.signIn();
             }
         },
         methods : {
