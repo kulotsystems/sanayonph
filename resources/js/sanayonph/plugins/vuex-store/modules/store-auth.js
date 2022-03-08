@@ -17,6 +17,7 @@ export default {
         loaded   : false,
         signedIn : false,
         signedOut: false,
+        forcedOut: false,
         showIntro: true,
         toggleTry: false
     },
@@ -35,7 +36,7 @@ export default {
 
         },
         signedOut: (state) => {
-            return state.loaded && (router.history.current.meta.rules.user.accept && !router.history.current.meta.rules.guest.accept) && state.signedOut;
+            return (state.loaded && (router.history.current.meta.rules.user.accept && !router.history.current.meta.rules.guest.accept) && state.signedOut) || state.forcedOut;
         },
         avatar: (state) => {
             return state.user.avatar != null ? state.user.avatar : '';
@@ -58,6 +59,11 @@ export default {
                 if(user)
                     state.signedIn = true;
             }
+        },
+        forceOut(state, bool) {
+            if(bool == null)
+                bool = true;
+            state.forcedOut = bool;
         },
         load(state) {
             state.loaded = true;

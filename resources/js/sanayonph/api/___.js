@@ -64,6 +64,8 @@ api.interceptors.response.use(
             store.commit('auth/setUser', null);
             if(router.history.current.name === 'sign-in')
                 store.commit('auth/toggleTry');
+            else
+                store.commit('auth/forceOut');
         }
 
         // 403 Forbidden
