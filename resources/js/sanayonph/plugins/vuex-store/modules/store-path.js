@@ -6,8 +6,19 @@
 |
 */
 
-export default {
+import favIcon            from '../../../assets/img/favicon.png';
+import signInBGMobile     from '../../../assets/img/bg/sign-in-bg-mobile-v2.png';
+import signInBGDesktop    from '../../../assets/img/bg/sign-in-bg-desktop-v2.png';
+import signUpBGMobile     from '../../../assets/img/bg/sign-up-bg-mobile-v2.png';
+import signUpBGDesktop    from '../../../assets/img/bg/sign-up-bg-desktop-v2.png';
+import yellowBGMobile     from '../../../assets/img/bg/yellow-bg-mobile-v1.png';
+import yellowBGDesktop    from '../../../assets/img/bg/yellow-bg-desktop-v1.png';
+import secondaryBGMobile  from '../../../assets/img/bg/secondary-bg-mobile-v1.png';
+import secondaryBGDesktop from '../../../assets/img/bg/secondary-bg-desktop-v1.png';
+import defaultAvatar      from '../../../assets/img/default-white.png';
+import defaultProduct     from '../../../assets/img/product.png';
 
+export default {
     namespaced: true,
 
     state: {
@@ -36,35 +47,38 @@ export default {
         paymentScreenshot: (state) => {
             return state.imageUploads + '/screenshots';
         },
+        favIcon: (state) => {
+            return favIcon;
+        },
         defaultAvatar: (state) => {
-            return state.images + '/default-white.png';
+            return defaultAvatar;
         },
         defaultProduct: (state) => {
-            return state.images + '/product.png';
+            return defaultProduct;
         },
         signInBGMobile: (state) => {
-            return state.images + '/sign-in-bg-mobile-v2.png';
+            return signInBGMobile;
         },
         signInBGDesktop: (state) => {
-            return state.images + '/sign-in-bg-desktop-v2.png';
+            return signInBGDesktop;
         },
         signUpBGMobile: (state) => {
-            return state.images + '/sign-up-bg-mobile-v2.png';
+            return signUpBGMobile;
         },
         signUpBGDesktop: (state) => {
-            return state.images + '/sign-up-bg-desktop-v2.png';
+            return signUpBGDesktop;
         },
         yellowBGMobile: (state) => {
-            return state.images + '/yellow-bg-mobile-v1.png';
+            return yellowBGMobile;
         },
         yellowBGDesktop: (state) => {
-            return state.images + '/yellow-bg-desktop-v1.png';
+            return yellowBGDesktop;
         },
         secondaryBGMobile: (state) => {
-            return state.images + '/secondary-bg-mobile-v1.png';
+            return secondaryBGMobile;
         },
         secondaryBGDesktop: (state) => {
-            return state.images + '/secondary-bg-desktop-v1.png';
+            return secondaryBGDesktop;
         }
     }
 
