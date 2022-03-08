@@ -225,6 +225,8 @@
              */
             signOut()
             {
+                this.$store.commit('store/setUser', this.$store.getters['auth/user']);
+                this.$store.commit('auth/setUser', null);
                 window.open(this.$router.options.base + '?signed-out=1', '_self');
             },
         },
