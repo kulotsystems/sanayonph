@@ -16,9 +16,6 @@ mix
     .sourceMaps(false)
     //.browserSync('127.0.0.1:8000')
 
-    .sass('resources/sass/default.scss', 'public/css')
-
-    .js('resources/js/app.js', 'public/js')
     .js('resources/js/sanayonph/sanayon.js', 'public/js/sanayon.js')
 
     .js('resources/js/vendor.js', 'public/js/vendor/___.js')
