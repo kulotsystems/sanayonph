@@ -263,6 +263,11 @@
         opacity: 0.7;
     }
 
+    .circle .cropper-view-box,
+    .circle .cropper-face {
+        border-radius: 50%;
+    }
+
     .v-app-bar-title__content{
         text-overflow: clip;
         overflow: visible;
@@ -281,11 +286,6 @@
     .v-toolbar__extension .theme--light.v-tabs>.v-tabs-bar,
     .v-toolbar__extension .theme--dark.v-tabs>.v-tabs-bar {
         background: transparent;
-    }
-
-    .circle .cropper-view-box,
-    .circle .cropper-face {
-        border-radius: 50%;
     }
 
     .v-btn--loading {
