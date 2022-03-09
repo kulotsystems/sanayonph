@@ -32,7 +32,7 @@
                                 <v-card hover exact router :to="{ name: 'profile-store-products-show', params: { product: product.id }}" :class="{'no-border-top-left-radius': j === 0, 'no-border-top-right-radius': ($vuetify.breakpoint.xs && j === 1) || ($vuetify.breakpoint.sm && j === 2) || ($vuetify.breakpoint.mdAndUp && j === 3)}">
                                     <v-img v-if="product.gen_images.length > 0"
                                            :lazy-src="$store.getters['path/defaultProduct']"
-                                           :src="`${$store.getters['path/productImg'][imageDir]}/${product.gen_images[0]}`"
+                                                :src="`${$store.getters['path/productImg'][imageDir]}/${product.gen_images[0]}`"
                                            aspect-ratio="1"
                                     >
                                         <template v-slot:placeholder>
@@ -43,7 +43,7 @@
                                     </v-img>
                                     <v-img v-else-if="product.var_images.length > 0"
                                            :lazy-src="$store.getters['path/defaultProduct']"
-                                           :src="`${$store.getters['path/productImg'][imageDir]}/${product.var_images[0]}`"
+                                                :src="`${$store.getters['path/productImg'][imageDir]}/${product.var_images[0]}`"
                                            aspect-ratio="1"
                                     >
                                         <template v-slot:placeholder>

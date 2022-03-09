@@ -13,7 +13,7 @@
                             <v-carousel elevation="1" class="rounded-t-sm rounded-b-sm" v-if="product.gen_images.length > 0 || product.var_images.length > 0" v-model="product.active_image" hide-delimiters show-arrows-on-hover :continuous="false" height="auto">
                                 <v-carousel-item v-for="(image, i) in product.gen_images.concat(product.var_images)" :key="i">
                                     <v-img
-                                        :lazy-src="$store.getters['path/defaultProduct']"
+                                        :lazy-src="i === 0 && $vuetify.breakpoint.xs ? `${$store.getters['path/productImg']['128']}/${image}` : $store.getters['path/defaultProduct']"
                                              :src="`${$store.getters['path/productImg']['300']}/${image}`"
                                         aspect-ratio="1"
                                     >
