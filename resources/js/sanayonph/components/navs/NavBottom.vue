@@ -1,5 +1,5 @@
 <template>
-    <v-bottom-navigation active-class="grey lighten-4 primary--text" grow app>
+    <v-bottom-navigation active-class="grey lighten-4 primary--text" :height="$vuetify.breakpoint.mdAndUp ? 64 : 56" grow app>
         <v-btn v-for="navItem in config.navItems" :key="navItem.label" router :to="navItem.route" exact>
             <span>{{ navItem.label }}</span>
             <v-icon>{{ navItem.icon }}</v-icon>
