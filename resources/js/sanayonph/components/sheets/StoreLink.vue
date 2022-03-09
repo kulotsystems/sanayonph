@@ -11,7 +11,7 @@
                 <v-list-item-title>
                     <b class="primary--text">{{ fullName }}</b>
                     <br>
-                    <small class="primary--text">@{{ username }}</small>
+                    <small class="primary--text text-spaced">@{{ username }}</small>
                 </v-list-item-title>
             </v-list-item-content>
             <v-list-item-action v-if="!plain">

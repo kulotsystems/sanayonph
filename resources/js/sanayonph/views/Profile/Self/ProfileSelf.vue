@@ -40,7 +40,7 @@
                                             </template>
                                         </p>
                                         <p class="mt-2 pb-2 font-weight-thin" style="line-height: 1">
-                                            <small class="text-subtitle-2">@{{ $store.getters['auth/user'].username }}</small>
+                                            <small class="text-spaced">@{{ $store.getters['auth/user'].username }}</small>
                                         </p>
                                     </template>
                                     <template v-else>
@@ -48,7 +48,7 @@
                                             {{ $store.getters['auth/user'].name.full_name_1 }}
                                         </p>
                                         <p class="ma-0 mt-1 mb-2 font-weight-thin" style="line-height: 1">
-                                            <small class="text-subtitle-2">@{{ $store.getters['auth/user'].username }}</small>
+                                            <small class="text-spaced">@{{ $store.getters['auth/user'].username }}</small>
                                         </p>
                                     </template>
                                 </div>

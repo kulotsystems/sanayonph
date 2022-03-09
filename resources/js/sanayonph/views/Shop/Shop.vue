@@ -37,7 +37,7 @@
                                 <small class="primary--text one-line" :class="{'text-body-1': $vuetify.breakpoint.xs}">{{ store.user.name.full_name_1 }}</small>
                             </v-card-title>
                             <v-card-text class="pb-0 one-line" align="center">
-                                <small class="primary--text">@{{ store.user.username }}</small>
+                                <small class="primary--text text-spaced">@{{ store.user.username }}</small>
                             </v-card-text>
                             <v-card-subtitle class="one-line" align="center">
                                 <small class="primary--text">{{ store.address }}</small>

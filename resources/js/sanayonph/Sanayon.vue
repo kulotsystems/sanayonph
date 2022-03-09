@@ -263,6 +263,12 @@
         opacity: 0.7;
     }
 
+    .text-spaced {
+        font-weight: 500;
+        line-height: 1;
+        letter-spacing: .0892857143em!important;
+    }
+
     .circle .cropper-view-box,
     .circle .cropper-face {
         border-radius: 50%;
