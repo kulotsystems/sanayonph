@@ -8,7 +8,7 @@
         </toolbar-main>
         <v-main class="secondary">
             <bg-secondary/>
-            <v-container class="pa-2 pa-sm-3">
+            <v-container class="pa-4 pa-sm-5">
                 <!-- NO CATEGORIES -->
                 <template v-if="config.categories.length <= 0">
                     <dialog-info v-if="config.loaded">
@@ -19,94 +19,98 @@
 
                 <!-- HAS CATEGORIES: DISPLAY PRODUCTS -->
                 <template v-else>
-                    <v-card v-for="(category, i) in config.categories" :key="category.id" :class="{'mb-4': i < (config.categories.length - 1) && !$vuetify.breakpoint.xs, 'mb-2': i < (config.categories.length - 1) && $vuetify.breakpoint.xs}">
-                        <v-toolbar class="grey lighten-5" dense flat>
-                            <v-toolbar-title>
-                                <v-icon class="secondary--text text--lighten-2">{{ $store.getters['icon/state'].category }}</v-icon>
-                                <small class="secondary--text">{{ category.name }}</small>
-                            </v-toolbar-title>
-                        </v-toolbar>
-                        <v-card-text class="secondary lighten-1 pa-3 pa-sm-4">
-                            <v-row v-if="category.products.length <= 0">
-                                <v-col cols="12">
-                                    <v-icon style="opacity: 0.7">info</v-icon> No products in this category yet.
-                                </v-col>
-                            </v-row>
-                            <transition-group v-else name="list-complete" tag="v-row">
-                                <v-col class="pa-1 pa-sm-2" cols="6" sm="4" md="3" v-for="(product, j) in category.products" :key="product.id" :class="{ 'list-complete-item': config.animation }">
-                                    <v-card :class="{ 'unpublished': !product.is_published }" hover>
-                                        <v-carousel v-if="product.gen_images.length > 0 || product.var_images.length > 0" v-model="product.active_image" hide-delimiters show-arrows-on-hover :continuous="false" height="auto">
-                                            <v-carousel-item v-for="(image, i) in product.gen_images.concat(product.var_images)" :key="i">
-                                                <v-img
-                                                    :lazy-src="$store.getters['path/defaultProduct']"
-                                                         :src="`${$store.getters['path/productImg'][imageDir]}/${image}`"
-                                                    aspect-ratio="1"
-                                                >
-                                                    <template v-slot:placeholder>
-                                                        <v-row class="fill-height ma-0" align="center" justify="center">
-                                                            <v-progress-circular indeterminate color="primary lighten-3"/>
-                                                        </v-row>
-                                                    </template>
-                                                </v-img>
-                                            </v-carousel-item>
-                                        </v-carousel>
-                                        <v-img v-else :src="$store.getters['path/defaultProduct']" aspect-ratio="1"/>
-                                        <v-card-subtitle class="px-2 pt-2 pb-0">
-                                            <div class="product-title secondary--text">
-                                                <small><span style="opacity: 0.8;">{{ j+1 }}. </span>{{ product.name }}</small>
-                                            </div>
-                                            <div class="product-subtitle mt-2">
-                                                <small>{{ category.name }}</small>
-                                            </div>
-                                        </v-card-subtitle>
-                                        <v-card-text class="pa-0 px-1 pr-3 grey lighten-3" align="right">
-                                            <table style="width: 100%">
-                                                <tr>
-                                                    <td class="primary--text" style="vertical-align: top">
-                                                        <div style="display: inline-block" align="center">
-                                                            <small>
-                                                                <b>{{ Number(product.pricing.stock.total).toLocaleString() }}</b>
-                                                                Stock
-                                                            </small>
-                                                        </div>
-                                                    </td>
-                                                    <td align="right">
-                                                        &#8369;
-                                                        <big>
-                                                            <b>{{ Number(product.pricing.price.min).toLocaleString() }}</b>
-                                                            <br>
-                                                            <template v-if="product.pricing.price.min !== product.pricing.price.max">
-                                                                ~ <b>{{ Number(product.pricing.price.max).toLocaleString() }}</b>
-                                                            </template>
-                                                            <template v-else>
-                                                                &nbsp;
-                                                            </template>
-                                                        </big>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </v-card-text>
-                                        <v-card-actions class="py-0">
-                                            <v-switch
-                                                inset
-                                                flat
-                                                v-model="product.is_published"
-                                                @click="confirmPublish(i, j)"
-                                                color="primary"
-                                            />
-                                            <v-spacer></v-spacer>
-                                            <v-btn fab class="primary lighten-1" depressed x-small exact router :to="{ name: 'profile-store-products-edit', params: { product: product.id, tab: 'general'} }" @click="config.animation=false">
-                                                <v-icon>edit</v-icon>
-                                            </v-btn>
-                                            <v-btn fab class="primary lighten-1" depressed x-small @click="confirmDelete(i, j)">
-                                                <v-icon>delete</v-icon>
-                                            </v-btn>
-                                        </v-card-actions>
-                                    </v-card>
-                                </v-col>
-                            </transition-group>
-                        </v-card-text>
-                    </v-card>
+                    <div v-for="(category, i) in config.categories" :key="category.id">
+                        <v-row>
+                            <v-col class="pa-1 pa-sm-2 pb-sm-0" :class="{'mt-6': i > 0}">
+                                <v-card color="primary" class="no-border-bottom-left-radius no-border-bottom-right-radius">
+                                    <v-toolbar flat>
+                                        <v-toolbar-title class="primary--text">
+                                            <v-icon color="primary">{{ $store.getters['icon/state'].category }}</v-icon>
+                                            <small>{{ category.name }}</small>
+                                        </v-toolbar-title>
+                                    </v-toolbar>
+                                </v-card>
+                            </v-col>
+                        </v-row>
+                        <v-row v-if="category.products.length <= 0">
+                            <v-col cols="12" class="white--text">
+                                <v-icon style="opacity: 0.7" color="white">info</v-icon> No products in this category yet.
+                            </v-col>
+                        </v-row>
+                        <transition-group v-else name="list-complete" tag="v-row">
+                            <v-col class="pa-1 pt-1 pa-sm-2 pt-sm-2" cols="6" sm="4" md="3" v-for="(product, j) in category.products" :key="product.id" :class="{ 'list-complete-item': config.animation }">
+                                <v-card hover :class="{ 'unpublished': !product.is_published, 'no-border-top-left-radius': j === 0, 'no-border-top-right-radius': ($vuetify.breakpoint.xs && j === 1) || ($vuetify.breakpoint.sm && j === 2) || ($vuetify.breakpoint.mdAndUp && j === 3)}">
+                                    <v-carousel v-if="product.gen_images.length > 0 || product.var_images.length > 0" v-model="product.active_image" hide-delimiters show-arrows-on-hover :continuous="false" height="auto">
+                                        <v-carousel-item v-for="(image, i) in product.gen_images.concat(product.var_images)" :key="i">
+                                            <v-img
+                                                :lazy-src="$store.getters['path/defaultProduct']"
+                                                     :src="`${$store.getters['path/productImg'][imageDir]}/${image}`"
+                                                aspect-ratio="1"
+                                            >
+                                                <template v-slot:placeholder>
+                                                    <v-row class="fill-height ma-0" align="center" justify="center">
+                                                        <v-progress-circular indeterminate color="primary lighten-3"/>
+                                                    </v-row>
+                                                </template>
+                                            </v-img>
+                                        </v-carousel-item>
+                                    </v-carousel>
+                                    <v-img v-else :src="$store.getters['path/defaultProduct']" aspect-ratio="1"/>
+                                    <v-card-subtitle class="px-2 pt-2 pb-0">
+                                        <div class="product-title secondary--text">
+                                            <small><span style="opacity: 0.8;">{{ j+1 }}. </span>{{ product.name }}</small>
+                                        </div>
+                                        <div class="product-subtitle mt-2">
+                                            <small>{{ category.name }}</small>
+                                        </div>
+                                    </v-card-subtitle>
+                                    <v-card-text class="pa-0 px-1 pr-3 grey lighten-3" align="right">
+                                        <table style="width: 100%">
+                                            <tr>
+                                                <td class="primary--text" style="vertical-align: top">
+                                                    <div style="display: inline-block" align="center">
+                                                        <small>
+                                                            <b>{{ Number(product.pricing.stock.total).toLocaleString() }}</b>
+                                                            Stock
+                                                        </small>
+                                                    </div>
+                                                </td>
+                                                <td align="right">
+                                                    &#8369;
+                                                    <big>
+                                                        <b>{{ Number(product.pricing.price.min).toLocaleString() }}</b>
+                                                        <br>
+                                                        <template v-if="product.pricing.price.min !== product.pricing.price.max">
+                                                            ~ <b>{{ Number(product.pricing.price.max).toLocaleString() }}</b>
+                                                        </template>
+                                                        <template v-else>
+                                                            &nbsp;
+                                                        </template>
+                                                    </big>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </v-card-text>
+                                    <v-card-actions class="py-0">
+                                        <v-switch
+                                            inset
+                                            flat
+                                            v-model="product.is_published"
+                                            @click="confirmPublish(i, j)"
+                                            color="primary"
+                                        />
+                                        <v-spacer></v-spacer>
+                                        <v-btn fab class="primary lighten-1" depressed x-small exact router :to="{ name: 'profile-store-products-edit', params: { product: product.id, tab: 'general'} }" @click="config.animation=false">
+                                            <v-icon>edit</v-icon>
+                                        </v-btn>
+                                        <v-btn fab class="primary lighten-1" depressed x-small @click="confirmDelete(i, j)">
+                                            <v-icon>delete</v-icon>
+                                        </v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-col>
+                        </transition-group>
+                    </div>
                 </template>
             </v-container>
         </v-main>
@@ -258,5 +262,17 @@
     }
     .unpublished {
         opacity: 0.7;
+    }
+    .no-border-top-left-radius {
+        border-top-left-radius: 0;
+    }
+    .no-border-top-right-radius {
+        border-top-right-radius: 0;
+    }
+    .no-border-bottom-left-radius {
+        border-bottom-left-radius: 0;
+    }
+    .no-border-bottom-right-radius {
+        border-bottom-right-radius: 0;
     }
 </style>
