@@ -230,6 +230,7 @@ class AgentController extends Controller
                 ->whereNull('sales_transferred_at')
                 ->skip($pagination['offset'])
                 ->take(self::$limit)
+                ->orderBy('payment_confirmed_at', 'DESC')
                 ->get();
 
             foreach ($result as $order) {
