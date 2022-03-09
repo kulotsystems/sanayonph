@@ -22,27 +22,22 @@ Source code for sanayonph.com.
     npm install
     ```
    
-    *c. Generate Application Key:*
-    ```composer log
-    php artisan key:generate
-    ```
-   
-    *d. Migrate database tables:*
+    *c. Migrate database tables:*
     ```composer log
     php artisan migrate
     ```
    
-    *e. Spin a local dev server:*
+    *d. Spin a local dev server:*
     ```composer log
     php artisan serve
     ```
    
-   *f. Compile and run frontend in different terminal session:*
+   *e. Compile and run frontend in different terminal session:*
     ```composer log
     npm run watch
     ```
    
-   *... Alternatively, instead of commands in [ e ] and [ f ]:*
+   *... Alternatively, instead of commands in [ d ] and [ e ]:*
    ```composer log
    run
    ```
