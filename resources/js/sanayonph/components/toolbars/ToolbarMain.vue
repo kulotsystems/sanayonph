@@ -9,7 +9,7 @@
             </v-btn>
 
             <!-- TITLE -->
-            <v-app-bar-title v-if="$route.meta.title && !hideTitle" class="text-h6 primary--text pl-0">
+            <v-app-bar-title v-if="$route.meta.title && !hideTitle" class="text-button primary--text pl-0">
                 {{ customTitle === '' ? $route.meta.title : customTitle }}
             </v-app-bar-title>
 
@@ -88,5 +88,8 @@
 </script>
 
 <style scoped>
-
+    .v-app-bar-title {
+        text-transform: none !important;
+        font-size: 1.2rem !important;
+    }
 </style>
