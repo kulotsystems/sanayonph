@@ -1,7 +1,7 @@
 <template>
     <v-app>
         <toolbar-main
-            :custom-title="`@${$store.getters['store/user'].username} Product`"
+            :custom-title="`@${$store.getters['store/user'].username}` + ($vuetify.breakpoint.smAndUp ? ' Product' : '')"
         />
         <v-main>
             <bg-white/>

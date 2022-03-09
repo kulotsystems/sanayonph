@@ -1,7 +1,7 @@
 <template>
     <v-app>
         <toolbar-main
-            :custom-title="`@${$store.getters['store/user'].username} Store`"
+            :custom-title="`@${$store.getters['store/user'].username}` + ($vuetify.breakpoint.smAndUp ? ' Store' : '')"
             :custom-back-route="{ name: 'shop' }"
         />
         <v-main class="yellow">
