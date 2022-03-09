@@ -4,36 +4,39 @@
             :custom-title="`@${$store.getters['store/user'].username} Product`"
         />
         <v-main>
+            <bg-white/>
             <v-container class="pa-2 pa-sm-3">
                 <v-row v-if="product != null">
                     <!-- PRODUCT IMAGES -->
                     <v-col cols="12" sm="6" md="6" class="pa-0 pa-sm-5 pa-md-6">
-                        <v-carousel class="rounded-t-sm rounded-b-sm" v-if="product.gen_images.length > 0 || product.var_images.length > 0" v-model="product.active_image" hide-delimiters show-arrows-on-hover :continuous="false" height="auto">
-                            <v-carousel-item v-for="(image, i) in product.gen_images.concat(product.var_images)" :key="i">
-                                <v-img
-                                    :lazy-src="$store.getters['path/defaultProduct']"
-                                         :src="`${$store.getters['path/productImg']['300']}/${image}`"
-                                    aspect-ratio="1"
-                                >
-                                    <template v-slot:placeholder>
-                                        <v-row class="fill-height ma-0" align="center" justify="center">
-                                            <v-progress-circular indeterminate color="primary lighten-3"/>
-                                        </v-row>
-                                    </template>
-                                </v-img>
-                            </v-carousel-item>
-                        </v-carousel>
-                        <v-img v-else
-                               :src="$store.getters['path/defaultProduct']"
-                               aspect-ratio="1"
-                        />
+                        <v-card :flat="$vuetify.breakpoint.xs">
+                            <v-carousel elevation="1" class="rounded-t-sm rounded-b-sm" v-if="product.gen_images.length > 0 || product.var_images.length > 0" v-model="product.active_image" hide-delimiters show-arrows-on-hover :continuous="false" height="auto">
+                                <v-carousel-item v-for="(image, i) in product.gen_images.concat(product.var_images)" :key="i">
+                                    <v-img
+                                        :lazy-src="$store.getters['path/defaultProduct']"
+                                             :src="`${$store.getters['path/productImg']['300']}/${image}`"
+                                        aspect-ratio="1"
+                                    >
+                                        <template v-slot:placeholder>
+                                            <v-row class="fill-height ma-0" align="center" justify="center">
+                                                <v-progress-circular indeterminate color="primary lighten-3"/>
+                                            </v-row>
+                                        </template>
+                                    </v-img>
+                                </v-carousel-item>
+                            </v-carousel>
+                            <v-img v-else
+                                   :src="$store.getters['path/defaultProduct']"
+                                   aspect-ratio="1"
+                            />
+                        </v-card>
                     </v-col>
 
                     <!-- PRODUCT DATA -->
                     <v-col cols="12" sm="6" md="6" class="py-3 px-4 pa-sm-4 pa-md-5">
-                        <v-card flat>
+                        <v-card flat class="transparent">
                             <v-card-title class="pa-1 secondary--text">
-                                <h4 class="font-weight-thin">{{ product.name }}</h4>
+                                <h4>{{ product.name }}</h4>
                             </v-card-title>
                             <v-card-subtitle class="pa-0 mt-3">
 
@@ -323,6 +326,7 @@
     export default {
         name: 'ProfileGuestStoreProductsDetails',
         components: {
+            'bg-white'        : () => import('../../../components/backgrounds/BackgroundWhite.vue'),
             'toolbar-main'    : () => import('../../../components/toolbars/ToolbarMain.vue'),
             'button-action'   : () => import('../../../components/buttons/ButtonAction.vue'),
             'store-link'      : () => import('../../../components/sheets/StoreLink.vue'),

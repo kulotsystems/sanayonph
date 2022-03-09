@@ -15,6 +15,8 @@ import yellowBGMobile     from '../../../assets/img/bg/yellow-bg-mobile-v1.png';
 import yellowBGDesktop    from '../../../assets/img/bg/yellow-bg-desktop-v1.png';
 import secondaryBGMobile  from '../../../assets/img/bg/secondary-bg-mobile-v1.png';
 import secondaryBGDesktop from '../../../assets/img/bg/secondary-bg-desktop-v1.png';
+import whiteBGMobile      from '../../../assets/img/bg/white-bg-mobile-v1.png';
+import whiteBGDesktop     from '../../../assets/img/bg/white-bg-desktop-v1.png';
 import defaultAvatar      from '../../../assets/img/default-white.png';
 import defaultProduct     from '../../../assets/img/product.png';
 
@@ -79,6 +81,12 @@ export default {
         },
         secondaryBGDesktop: (state) => {
             return secondaryBGDesktop;
+        },
+        whiteBGMobile: (state) => {
+            return whiteBGMobile;
+        },
+        whiteBGDesktop: (state) => {
+            return whiteBGDesktop;
         }
     }
 
