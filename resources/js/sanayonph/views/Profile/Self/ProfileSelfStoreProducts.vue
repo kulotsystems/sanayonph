@@ -26,7 +26,7 @@
                                     <v-toolbar flat>
                                         <v-toolbar-title class="primary--text">
                                             <v-icon color="primary">{{ $store.getters['icon/state'].category }}</v-icon>
-                                            <small>{{ category.name }}</small>
+                                            <small class="text-button">{{ category.name }}</small>
                                         </v-toolbar-title>
                                     </v-toolbar>
                                 </v-card>
