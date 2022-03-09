@@ -12,35 +12,40 @@ Source code for sanayonph.com.
 3. Create a MySQL database named `sanayonph`.
 4. Open cloned directory in terminal then run the following commands in order:
 
-    *Install backend dependencies:*
+    *a. Install backend dependencies:*
     ```composer log
     composer update
     ```
    
-    *Install frontend dependencies:*
+    *b. Install frontend dependencies:*
     ```composer log
     npm install
     ```
    
-    *Generate Application Key:*
+    *c. Generate Application Key:*
     ```composer log
     php artisan key:generate
     ```
    
-    *Migrate database tables:*
+    *d. Migrate database tables:*
     ```composer log
     php artisan migrate
     ```
    
-    *Spin a local dev server:*
+    *e. Spin a local dev server:*
     ```composer log
     php artisan serve
     ```
    
-   *Compile and run frontend in different terminal session:*
+   *f. Compile and run frontend in different terminal session:*
     ```composer log
     npm run watch
     ```
+   
+   *... Alternatively, instead of commands in [ e ] and [ f ]:*
+   ```composer log
+   run
+   ```
    
     
 5. Access the created local dev server and sign-up for an account using any of the following mobile numbers:
