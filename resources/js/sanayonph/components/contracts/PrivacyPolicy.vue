@@ -151,7 +151,6 @@
 				<p>You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are effective when they are posted on this page.</p>
 				<p>22. <b>Contact Us</b></p>
 				<p>If you have any questions about this Privacy Policy, please contact us by email: <b>Sanayonph@gmail.com</b>.</p>
-				<p>This <a href="https://policymaker.io/privacy-policy/">Privacy Policy</a> was created for <b>sanayonph.com</b> by <a href="https://policymaker.io">PolicyMaker.io</a> on 2021-09-01.</p>
 			</v-card-text>
 
 			<v-divider></v-divider>
