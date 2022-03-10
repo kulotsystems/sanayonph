@@ -695,6 +695,7 @@
 
                         if(response.data.ordered) {
                             this.config.checkingOut = false;
+                            this.$store.commit('auth/data/purge', 'selfOrders');
                             this.$store.commit('dialog/message/show', {
                                 title   : 'Order Placed!',
                                 prompt  : 'You have successfully place an order for this product.',

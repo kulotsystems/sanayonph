@@ -309,6 +309,7 @@
 
                         if(response.data.status) {
                             this.config.order.status = response.data.status;
+                            this.$store.commit('auth/data/purge', 'selfOrders');
                             this.config.cancelling = false;
                         }
                         this.config.btnCancel.loading = false;
@@ -345,6 +346,7 @@
 
                                     if(response.data.status) {
                                         this.config.order.status = response.data.status;
+                                        this.$store.commit('auth/data/purge', 'selfOrders');
                                         this.$store.commit('dialog/confirm/hide');
                                     }
                                 }).catch(errors => {
