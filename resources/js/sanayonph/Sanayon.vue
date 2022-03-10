@@ -87,6 +87,12 @@
                                     this.config.transition = '';
                             }
                         }
+
+                        // hide dialogs
+                        this.$store.commit('dialog/message/hide');
+                        this.$store.commit('dialog/confirm/hide');
+                        this.$store.commit('dialog/error/hide');
+                        this.$store.commit('dialog/image/hide');
                     } catch (e) {}
                 }
             },
