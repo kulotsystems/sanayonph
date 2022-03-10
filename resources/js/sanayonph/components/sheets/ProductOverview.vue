@@ -7,6 +7,8 @@
                            :lazy-src="$store.getters['path/defaultProduct']"
                            :src="`${$store.getters['path/productImg']['128']}/${image}`"
                            aspect-ratio="1"
+                           @click="$store.commit('dialog/image/show', { title: label, image: `${$store.getters['path/productImg']['300']}/${image}` })"
+                           style="cursor: pointer"
                     />
                     <v-img v-else
                            :src="$store.getters['path/defaultProduct']"
