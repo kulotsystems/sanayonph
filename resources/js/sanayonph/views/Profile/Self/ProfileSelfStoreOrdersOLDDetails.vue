@@ -269,22 +269,26 @@
                 <v-bottom-navigation v-if="!orderDeclined && !orderCancelled && !orderConfirmed && !orderForPickup && !orderCompleted" class="block" grow app>
                     <button-action
                         label="Decline Order"
+                        icon="cancel_presentation"
                         class="text-body-1"
                         :class="{'blurred': paymentConfirmed}"
+                        :loading="config.btnDeclineActivator.loading"
                         rounded
                         large
                         text
-                        @click="config.declining = true"
+                        @click="attempt(false)"
 
                     />
                     <button-action
                         label="Confirm Order"
+                        icon="done_outline"
                         class="text-body-1"
                         :class="{'blurred': !paymentConfirmed}"
+                        :loading="config.btnConfirmActivator.loading"
                         rounded
                         large
                         text
-                        @click="config.confirming=true"
+                        @click="attempt(true)"
                     />
                 </v-bottom-navigation>
             </template>
@@ -327,6 +331,12 @@
                     },
                     pickup_time: {
                         modal: false
+                    },
+                    btnDeclineActivator: {
+                        loading: false
+                    },
+                    btnConfirmActivator: {
+                        loading: false
                     },
                     btnDecline: {
                         loading: false
@@ -400,6 +410,42 @@
             }
         },
         methods : {
+            /****************************************************************************************************
+             * METHOD: ATTEMPT DECLINE / CONFIRM
+             * Fetch fresh order details, then attempt to decline or confirm order
+             */
+            attempt(confirming) {
+                if((!confirming && !this.config.btnDeclineActivator.loading) || (confirming && !this.config.btnConfirmActivator.loading)) {
+                    if(!confirming)
+                        this.config.btnDeclineActivator.loading = true;
+                    else
+                        this.config.btnConfirmActivator.loading = true;
+                    api_order.sellerShow(this.$route.params.order).then(response => {
+                        if(!response) return;
+
+                        this.config.order = response.data.order;
+                        this.$store.commit('auth/data/purge', 'storeOrders');
+                        if(!confirming) {
+                            this.config.btnDeclineActivator.loading = false;
+                            this.config.declining = true;
+                        }
+                        else {
+                            this.config.btnConfirmActivator.loading = false;
+                            this.config.confirming = true;
+                        }
+                    }).catch(errors => {
+                        if(!confirming)
+                            this.config.btnDeclineActivator.loading = false;
+                        else
+                            this.config.btnConfirmActivator.loading = false;
+                        this.$store.commit('dialog/error/show', errors);
+                        this.response.message = errors.response.data.message;
+                        this.response.errors  = errors.response.data.errors;
+                    });
+                }
+            },
+
+
             /****************************************************************************************************
              * METHOD: DECLINE ORDER
              * Decline the order
