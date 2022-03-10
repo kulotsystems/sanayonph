@@ -75,6 +75,7 @@ class AgentController extends Controller
         else {
             // get total orders to confirm payment
             $total = Order::select('id')
+                ->where('user_id', '>=', app()->environment('production') ? 3 : 1)
                 ->where('payment_method_id', 2)
                 ->whereNotNull('payment_screenshot')
                 ->whereNull('payment_confirmed_at')
@@ -90,6 +91,7 @@ class AgentController extends Controller
             // get orders to confirm payment
             $orders = [];
             $result = Order::where('payment_method_id', 2)
+                ->where('user_id', '>=', app()->environment('production') ? 3 : 1)
                 ->whereNotNull('payment_screenshot')
                 ->whereNull('payment_confirmed_at')
                 ->whereNull('payment_declined_at')
@@ -210,6 +212,7 @@ class AgentController extends Controller
         else {
             // get total orders to transfer payment
             $total = Order::select('id')
+                ->where('user_id', '>=', app()->environment('production') ? 3 : 1)
                 ->where('payment_method_id', 2)
                 ->whereNotNull('payment_screenshot')
                 ->whereNotNull('payment_confirmed_at')
@@ -224,6 +227,7 @@ class AgentController extends Controller
             // get orders to transfer payment
             $orders = [];
             $result = Order::where('payment_method_id', 2)
+                ->where('user_id', '>=', app()->environment('production') ? 3 : 1)
                 ->whereNotNull('payment_screenshot')
                 ->whereNotNull('payment_confirmed_at')
                 ->whereNull('payment_declined_at')
