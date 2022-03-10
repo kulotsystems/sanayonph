@@ -184,6 +184,7 @@
 
                         if(response.data.stored) {
                             this.config.btnAdd.loading = false;
+                            this.$store.commit('auth/data/purge', 'categories');
                             this.goBack();
                         }
                     }).catch(errors => {
@@ -210,6 +211,7 @@
 
                         if(response.data.updated) {
                             this.config.btnUpdate.loading = false;
+                            this.$store.commit('auth/data/purge', 'categories');
                             this.$store.commit('snackbar/bottom/show', {
                                 prompt: 'Category updated!'
                             });

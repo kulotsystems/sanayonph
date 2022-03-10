@@ -11,7 +11,7 @@
             <v-container class="pa-2 pa-sm-3">
                 <!-- CATEGORIES -->
                 <transition-group name="list-complete" tag="v-row">
-                    <v-col cols="12" sm="6" md="4" v-for="(category, i) in config.categories" :key="category.id" :class="{'pb-0': i < (config.categories.length - 1) && $vuetify.breakpoint.xs, 'list-complete-item': config.animation}">
+                    <v-col cols="12" sm="6" md="4" v-for="(category, i) in categories" :key="category.id" :class="{'pb-0': i < (categories.length - 1) && $vuetify.breakpoint.xs, 'list-complete-item': config.animation}">
                         <v-card>
                             <v-toolbar class="grey lighten-5" dense flat>
                                 <v-toolbar-title>
@@ -58,12 +58,25 @@
         data() {
             return {
                 config: {
-                    categories: [],
                     animation : false
-                }
+                },
+                request: {
+
+                },
+                response: {
+                    message: '',
+                    errors : {}
+                },
+                categoriesCacheCtr: 0
             }
         },
-        computed: {},
+        computed: {
+            // computed categories
+            categories() {
+                let ctr = this.categoriesCacheCtr;
+                return this.$store.getters['auth/data/categories'];
+            }
+        },
         methods : {
 
             /****************************************************************************************************
@@ -71,7 +84,7 @@
              * Confirm to delete selected category
              */
             confirmDelete(i) {
-                let category = this.config.categories[i];
+                let category = this.categories[i];
                 this.$store.commit('dialog/confirm/show', {
                     title   : 'Delete Category',
                     prompt  : 'Do you really want to delete the following category?<div class="mt-5"><small class="text-body-1 primary--text">' + category.name + '</small></div>',
@@ -87,7 +100,7 @@
                                 if(!response) return;
 
                                 if(response.data.deleted) {
-                                    this.config.categories.splice(i, 1);
+                                    this.categories.splice(i, 1);
                                 }
                                 this.$store.commit('dialog/confirm/hide');
                             }).catch(errors => {
@@ -99,23 +112,36 @@
             }
         },
         created() {
-            setTimeout(() => {
-                this.$store.commit('dialog/loader/show');
-                api_category.index().then(response => {
-                    this.$store.commit('dialog/loader/hide');
-                    if(!response) return;
+            if(this.categories == null) {
+                setTimeout(() => {
+                    this.$store.commit('dialog/loader/show');
+                    api_category.index().then(response => {
+                        this.$store.commit('dialog/loader/hide');
+                        if(!response) return;
 
-                    this.config.categories = response.data.categories;
+                        // commit to auth/data/categories vuex store module
+                        this.$store.commit('auth/data/fill', {
+                            key : 'categories',
+                            data: response.data.categories
+                        });
+                        this.categoriesCacheCtr += 1;
 
-                    // enable animation after a delay
-                    setTimeout(() => {
-                        this.config.animation = true;
-                    }, 500);
-                }).catch(errors => {
-                    this.$store.commit('dialog/loader/hide');
-                    this.$store.commit('dialog/error/show', errors);
-                });
-            }, 350);
+                        // enable animation after a delay
+                        setTimeout(() => {
+                            this.config.animation = true;
+                        }, 500);
+                    }).catch(errors => {
+                        this.$store.commit('dialog/loader/hide');
+                        this.$store.commit('dialog/error/show', errors);
+                    });
+                }, 350);
+            }
+            else {
+                // enable animation after a delay
+                setTimeout(() => {
+                    this.config.animation = true;
+                }, 500);
+            }
         }
     }
 </script>
