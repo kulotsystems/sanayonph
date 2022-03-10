@@ -587,8 +587,7 @@
                                 action: () => {
                                     window.open(this.$router.history.base + '?next=' + encodeURI(this.$route.path), '_self');
                                 }
-                            },
-                            persistent: true
+                            }
                         });
                     }
 
@@ -635,15 +634,14 @@
                 if(this.config.deliveryAddresses.length <= 0) {
                     this.$store.commit('dialog/message/show', {
                         title : 'Notice',
-                        prompt: 'Please set at least one <span class="primary--text">Delivery Address</span> first.',
+                        prompt: 'Please set at least one <span class="primary--text">Delivery Addresss</span> first.',
                         okIcon : this.$store.getters['icon/state'].address,
                         okLabel: 'Addresses',
                         callback: {
                             action: () => {
                                 this.$router.replace({ name: 'profile-delivery-addresses', params: { username: this.$store.getters['auth/user'].username } });
                             }
-                        },
-                        persistent: true
+                        }
                     });
                 }
                 else {
