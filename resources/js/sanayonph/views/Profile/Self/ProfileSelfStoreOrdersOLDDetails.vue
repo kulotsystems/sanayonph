@@ -266,7 +266,7 @@
 
             <!-- ORDER DECLINE/CONFIRM ACTIONS -->
             <template v-if="config.order != null">
-                <v-bottom-navigation v-if="!orderDeclined && !orderCancelled && !orderConfirmed && !orderForPickup" class="block" grow app>
+                <v-bottom-navigation v-if="!orderDeclined && !orderCancelled && !orderConfirmed && !orderForPickup && !orderCompleted" class="block" grow app>
                     <button-action
                         label="Decline Order"
                         class="text-body-1"
@@ -392,6 +392,11 @@
             // computed order for pickup
             orderForPickup() {
                 return this.config.order.status.order != null ? this.config.order.status.order.status === 'For pickup / meetup' : false;
+            },
+
+            // computed order completed
+            orderCompleted() {
+                return this.config.order.status.order != null ? this.config.order.status.order.status === 'Completed' : false;
             }
         },
         methods : {
