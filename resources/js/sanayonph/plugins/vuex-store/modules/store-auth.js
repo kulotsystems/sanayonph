@@ -7,6 +7,7 @@
 */
 
 import router from '../../vue-router/Router.js';
+import data   from './auth-data/store-auth-data.js';
 
 export default {
 
@@ -77,5 +78,9 @@ export default {
         toggleTry(state) {
             state.toggleTry = !state.toggleTry;
         },
+    },
+
+    modules: {
+        data
     }
 }
