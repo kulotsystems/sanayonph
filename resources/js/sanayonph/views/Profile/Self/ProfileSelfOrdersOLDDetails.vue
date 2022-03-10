@@ -180,21 +180,25 @@
                 <v-bottom-navigation v-if="!orderDeclined && !orderCancelled && !orderCompleted" class="block" grow app>
                     <button-action
                         label="Cancel Order"
+                        icon="cancel_presentation"
                         class="text-body-1"
                         :class="{'blurred': paymentConfirmed}"
+                        :loading="config.btnCancelActivator.loading"
                         rounded
                         large
                         text
-                        @click="config.cancelling = true"
+                        @click="attempt(false)"
                     />
                     <button-action
                         label="Order Received"
+                        icon="done_outline"
                         class="text-body-1"
                         :class="{'blurred': !orderForPickup}"
+                        :loading="config.btnReceiveActivator.loading"
                         rounded
                         large
                         text
-                        @click="receiveOrder"
+                        @click="attempt(true)"
                     />
                 </v-bottom-navigation>
             </template>
@@ -231,6 +235,12 @@
                     },
                     review_remarks: {
                         max: 300
+                    },
+                    btnCancelActivator: {
+                        loading: false
+                    },
+                    btnReceiveActivator: {
+                        loading: false
                     },
                     btnCancel: {
                         loading: false
@@ -276,6 +286,42 @@
             }
         },
         methods : {
+            /****************************************************************************************************
+             * METHOD: ATTEMPT CANCEL / RECEIVE
+             * Fetch fresh order details, then attempt to cancel or receive order
+             */
+            attempt(receiving) {
+                if((!receiving && !this.config.btnCancelActivator.loading) || (receiving && !this.config.btnReceiveActivator.loading)) {
+                    if(!receiving)
+                        this.config.btnCancelActivator.loading = true;
+                    else
+                        this.config.btnReceiveActivator.loading = true;
+                    api_order.buyerShow(this.$route.params.order).then(response => {
+                        if(!response) return;
+
+                        this.config.order = response.data.order;
+                        this.$store.commit('auth/data/purge', 'selfOrders');
+                        if(!receiving) {
+                            this.config.btnCancelActivator.loading = false;
+                            this.config.cancelling = true;
+                        }
+                        else {
+                            this.config.btnReceiveActivator.loading = false;
+                            this.receiveOrder();
+                        }
+                    }).catch(errors => {
+                        if(!receiving)
+                            this.config.btnCancelActivator.loading = false;
+                        else
+                            this.config.btnReceiveActivator.loading = false;
+                        this.$store.commit('dialog/error/show', errors);
+                        this.response.message = errors.response.data.message;
+                        this.response.errors  = errors.response.data.errors;
+                    });
+                }
+            },
+
+
             /****************************************************************************************************
              * METHOD: UPLOAD PHOTO
              * Handle emitted image upload event
