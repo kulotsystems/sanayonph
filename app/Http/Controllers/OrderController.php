@@ -354,11 +354,6 @@ class OrderController extends Controller
                 'payment' => ['Payment is already confirmed.']
             ]);
         }
-        else if($order->status['order']['status'] == Order::$ORDER_CONFIRMED_BY_SELLER) {
-            throw ValidationException::withMessages([
-                'order' => ['Order is already confirmed.']
-            ]);
-        }
         else if($order->status['order']['status'] == Order::$ORDER_CANCELLED_BY_BUYER) {
             throw ValidationException::withMessages([
                 'order' => ['Order is cancelled by buyer.']
