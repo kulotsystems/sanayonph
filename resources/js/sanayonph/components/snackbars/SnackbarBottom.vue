@@ -1,11 +1,10 @@
 <template>
-    <v-snackbar v-model="isOpen" color="secondary"  bottom vertical timeout="3000">
+    <v-snackbar v-model="isOpen" color="secondary" outlined bottom vertical timeout="3000">
         <span class="text-button">{{ snackbar.prompt }}</span>
 
         <template v-slot:action="{ attrs }">
             <v-btn
-                color="yellow"
-                text
+                color="secondary"
                 v-bind="attrs"
                 @click="$store.commit('snackbar/bottom/hide')"
             >
