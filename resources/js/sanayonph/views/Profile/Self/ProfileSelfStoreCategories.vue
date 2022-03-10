@@ -8,7 +8,7 @@
         </toolbar-main>
         <v-main class="secondary">
             <bg-secondary/>
-            <v-container class="pa-2 pa-sm-3">
+            <v-container class="pa-2 pa-sm-3" v-if="categories != null">
                 <!-- CATEGORIES -->
                 <transition-group name="list-complete" tag="v-row">
                     <v-col cols="12" sm="6" md="4" v-for="(category, i) in categories" :key="category.id" :class="{'pb-0': i < (categories.length - 1) && $vuetify.breakpoint.xs, 'list-complete-item': config.animation}">
