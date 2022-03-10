@@ -7,7 +7,7 @@
             <v-container class="pa-2 pa-sm-3">
                 <v-row v-if="config.order != null">
                     <!-- LEFT COLUMN -->
-                    <v-col cols="12" sm="6" md="6" class="pb-0">
+                    <v-col cols="12" sm="6" md="6" class="pb-0" :class="{'pb-3': this.orderCancelled || this.orderDeclined}">
                         <!-- Order Status -->
                         <v-card>
                             <v-toolbar class="grey lighten-5" dense flat>
