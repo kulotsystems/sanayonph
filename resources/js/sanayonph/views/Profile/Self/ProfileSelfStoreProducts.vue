@@ -10,7 +10,7 @@
             <bg-secondary/>
             <v-container class="pa-4 pa-sm-5">
                 <!-- NO CATEGORIES -->
-                <template v-if="config.categories.length <= 0">
+                <template v-if="categories.length <= 0">
                     <dialog-info v-if="config.loaded">
                         <p class="primary--text text-h6">Please add at least one product category first.</p>
                         <v-btn color="primary" exact router :to="{ name: 'profile-store-categories' }">Categories</v-btn>
@@ -19,7 +19,7 @@
 
                 <!-- HAS CATEGORIES: DISPLAY PRODUCTS -->
                 <template v-else>
-                    <div v-for="(category, i) in config.categories" :key="category.id">
+                    <div v-for="(category, i) in categories" :key="category.id">
                         <v-row>
                             <v-col class="pa-1 pa-sm-2 pb-sm-0" :class="{'mt-6': i > 0}">
                                 <v-card color="primary" class="no-border-bottom-left-radius no-border-bottom-right-radius">
@@ -131,16 +131,29 @@
         data() {
             return {
                 config: {
-                    categories: [],
                     animation : false,
                     loaded    : false
-                }
+                },
+                request: {
+
+                },
+                response: {
+                    message: '',
+                    errors : {}
+                },
+                categoriesCacheCtr: 0
             }
         },
         computed: {
             // computed image directory
             imageDir() {
                 return this.$vuetify.breakpoint.xs ? '128' : '300';
+            },
+
+            // computed categories with products
+            categories() {
+                let ctr = this.categoriesCacheCtr;
+                return this.$store.getters['auth/data/products'];
             }
         },
         methods : {
@@ -149,7 +162,7 @@
              * Confirm to delete selected product
              */
             confirmDelete(i, j) {
-                let product = this.config.categories[i].products[j];
+                let product = this.categories[i].products[j];
                 this.$store.commit('dialog/confirm/show', {
                     title   : 'Delete Product',
                     prompt  : 'Do you really want to delete the following product?<div class="mt-5"><small class="text-body-1 primary--text">' + product.name + '</small></div>',
@@ -165,7 +178,7 @@
                                 if(!response) return;
 
                                 if(response.data.deleted) {
-                                    this.config.categories[i].products.splice(j, 1);
+                                    this.categories[i].products.splice(j, 1);
                                 }
                                 this.$store.commit('dialog/confirm/hide');
                             }).catch(errors => {
@@ -181,7 +194,7 @@
              * Confirm to publish or unpublish product
              */
             confirmPublish(i, j) {
-                let product      = this.config.categories[i].products[j];
+                let product      = this.categories[i].products[j];
                 let isPublishing = product.is_published;
                 let term = isPublishing ? 'Publish' : 'Unpublish';
                 this.$store.commit('dialog/confirm/show', {
@@ -199,8 +212,8 @@
                                 if(!response) return;
 
                                 if(response.data.published) {
-                                    this.config.categories[i].products[j].is_published = isPublishing;
-                                    this.config.categories[i].products[j].published_at = response.data.published;
+                                    this.categories[i].products[j].is_published = isPublishing;
+                                    this.categories[i].products[j].published_at = response.data.published;
                                 }
                                 this.$store.commit('dialog/confirm/hide');
                             }).catch(errors => {
@@ -210,7 +223,7 @@
                     },
                     noCallback: {
                         action: () => {
-                            this.config.categories[i].products[j].is_published = !isPublishing;
+                            this.categories[i].products[j].is_published = !isPublishing;
                         }
                     },
                     persistent: true
@@ -218,24 +231,37 @@
             }
         },
         created() {
-            setTimeout(() => {
-                this.$store.commit('dialog/loader/show');
-                api_product.index().then(response => {
-                    this.$store.commit('dialog/loader/hide');
-                    if(!response) return;
+            if(this.categories == null) {
+                setTimeout(() => {
+                    this.$store.commit('dialog/loader/show');
+                    api_product.index().then(response => {
+                        this.$store.commit('dialog/loader/hide');
+                        if(!response) return;
 
-                    this.config.categories = response.data.categories;
-                    this.config.loaded = true;
+                        // commit to auth/data/products vuex store module
+                        this.$store.commit('auth/data/fill', {
+                            key : 'products',
+                            data: response.data.categories
+                        });
+                        this.categoriesCacheCtr += 1;
+                        this.config.loaded = true;
 
-                    // enable animation after a delay
-                    setTimeout(() => {
-                        this.config.animation = true;
-                    }, 500);
-                }).catch(errors => {
-                    this.$store.commit('dialog/loader/hide');
-                    this.$store.commit('dialog/error/show', errors);
-                });
-            }, 350);
+                        // enable animation after a delay
+                        setTimeout(() => {
+                            this.config.animation = true;
+                        }, 500);
+                    }).catch(errors => {
+                        this.$store.commit('dialog/loader/hide');
+                        this.$store.commit('dialog/error/show', errors);
+                    });
+                }, 350);
+            }
+            else {
+                // enable animation after a delay
+                setTimeout(() => {
+                    this.config.animation = true;
+                }, 500);
+            }
         }
     }
 </script>

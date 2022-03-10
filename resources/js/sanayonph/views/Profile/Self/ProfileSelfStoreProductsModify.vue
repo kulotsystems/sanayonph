@@ -1141,6 +1141,7 @@
 
                         if(response.data.stored) {
                             this.config.btnAdd.loading = false;
+                            this.$store.commit('auth/data/purge', 'products');
                             this.goBack();
                         }
                     }).catch(errors => {
@@ -1164,6 +1165,7 @@
 
                         if(response.data.updated) {
                             this.config.btnUpdate.loading = false;
+                            this.$store.commit('auth/data/purge', 'products');
                             this.$store.commit('snackbar/bottom/show', {
                                 prompt: 'Product updated!'
                             });
