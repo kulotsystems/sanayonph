@@ -25,7 +25,7 @@
                                 <p class="name mb-0"><span class="grey--text">{{ i + 1 }}. </span> {{ category.name }}</p>
                             </v-card-title>
                             <v-card-subtitle class="text-body-1">
-                                <p class="description mb-0">{{ category.description }}</p>
+                                <p class="description mb-0" style="white-space: pre-wrap;">{{ category.description }}</p>
                             </v-card-subtitle>
 
                             <v-card-actions>
