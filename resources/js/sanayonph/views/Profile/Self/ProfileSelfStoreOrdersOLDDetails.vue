@@ -410,6 +410,7 @@
 
                         if(response.data.status) {
                             this.config.order.status = response.data.status;
+                            this.$store.commit('auth/data/purge', 'storeOrders');
                             this.config.declining = false;
                         }
 
@@ -440,6 +441,7 @@
 
                         if(response.data.status) {
                             this.config.order.status = response.data.status;
+                            this.$store.commit('auth/data/purge', 'storeOrders');
                             this.config.confirming = false;
                         }
 

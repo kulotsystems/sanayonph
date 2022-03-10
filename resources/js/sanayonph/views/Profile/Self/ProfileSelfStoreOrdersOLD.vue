@@ -4,9 +4,9 @@
         <toolbar-main/>
         <v-main class="secondary">
             <bg-secondary/>
-            <v-container class="pa-2 pa-sm-3">
+            <v-container class="pa-2 pa-sm-3" v-if="orders != null">
                 <!-- NO ORDERS -->
-                <template v-if="config.orders.length <= 0">
+                <template v-if="orders.length <= 0">
                     <dialog-info v-if="config.loaded">
                         <span class="primary--text text-h6">There are no orders in your store yet.</span>
                     </dialog-info>
@@ -14,7 +14,7 @@
 
                 <!-- HAS ORDERS -->
                 <transition-group v-else name="list-complete" tag="v-row">
-                    <v-col cols="12" sm="6" v-for="(order, index) in config.orders" :key="order.id" :class="{'pb-2': index < (config.orders.length - 1) && !$vuetify.breakpoint.xs, 'pb-0': index < (config.orders.length - 1) && $vuetify.breakpoint.xs, 'list-complete-item': config.animation}">
+                    <v-col cols="12" sm="6" v-for="(order, index) in orders" :key="order.id" :class="{'pb-2': index < (orders.length - 1) && !$vuetify.breakpoint.xs, 'pb-0': index < (orders.length - 1) && $vuetify.breakpoint.xs, 'list-complete-item': config.animation}">
                         <v-card hover exact router :to="{ name: 'profile-store-orders-details', params: { order: order.id } }">
                             <v-toolbar class="grey lighten-5" dense flat>
                                 <v-icon class="grey--text text--lighten-1 mr-1" small>{{ $store.getters['icon/state'].order }}</v-icon>
@@ -106,33 +106,59 @@
         data() {
             return {
                 config: {
-                    orders    : [],
                     animation : false,
                     loaded    : false
-                }
+                },
+                request: {
+
+                },
+                response: {
+                    message: '',
+                    errors : {}
+                },
+                ordersCacheCtr: 0
             }
         },
-        computed: {},
+        computed: {
+            // computed self orders
+            orders() {
+                let ctr = this.ordersCacheCtr;
+                return this.$store.getters['auth/data/storeOrders'];
+            }
+        },
         methods : {},
         created() {
-            setTimeout(() => {
-                this.$store.commit('dialog/loader/show');
-                api_order.sellerIndex().then(response => {
-                    this.$store.commit('dialog/loader/hide');
-                    if(!response) return;
+            if(this.orders == null) {
+                setTimeout(() => {
+                    this.$store.commit('dialog/loader/show');
+                    api_order.sellerIndex().then(response => {
+                        this.$store.commit('dialog/loader/hide');
+                        if(!response) return;
 
-                    this.config.orders = response.data.orders;
-                    this.config.loaded = true;
+                        // commit to auth/data/storeOrders vuex store module
+                        this.$store.commit('auth/data/fill', {
+                            key : 'storeOrders',
+                            data: response.data.orders
+                        });
+                        this.ordersCacheCtr += 1;
+                        this.config.loaded = true;
 
-                    // enable animation after a delay
-                    setTimeout(() => {
-                        this.config.animation = true;
-                    }, 500);
-                }).catch(errors => {
-                    this.$store.commit('dialog/loader/hide');
-                    this.$store.commit('dialog/error/show', errors);
-                });
-            }, 350);
+                        // enable animation after a delay
+                        setTimeout(() => {
+                            this.config.animation = true;
+                        }, 500);
+                    }).catch(errors => {
+                        this.$store.commit('dialog/loader/hide');
+                        this.$store.commit('dialog/error/show', errors);
+                    });
+                }, 350);
+            }
+            else {
+                // enable animation after a delay
+                setTimeout(() => {
+                    this.config.animation = true;
+                }, 500);
+            }
         }
     }
 </script>
