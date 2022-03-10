@@ -299,6 +299,7 @@
 
                         if(response.data.stored) {
                             this.config.btnAdd.loading = false;
+                            this.$store.commit('auth/data/purge', 'addresses');
                             this.goBack();
                         }
                     }).catch(errors => {
@@ -328,6 +329,7 @@
 
                         if(response.data.updated) {
                             this.config.btnUpdate.loading = false;
+                            this.$store.commit('auth/data/purge', 'addresses');
                             this.$store.commit('snackbar/bottom/show', {
                                 prompt: 'Delivery address updated!'
                             });

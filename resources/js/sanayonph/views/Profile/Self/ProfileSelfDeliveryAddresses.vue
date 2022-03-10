@@ -9,10 +9,10 @@
         </toolbar-main>
         <v-main class="secondary">
             <bg-secondary/>
-            <v-container class="pa-2 pa-sm-3">
+            <v-container class="pa-2 pa-sm-3" v-if="addresses != null">
                 <!-- DELIVERY ADDRESSES -->
                 <transition-group name="list-complete" tag="v-row">
-                    <v-col cols="12" sm="6" md="4" v-for="(address, i) in config.addresses" :key="address.id" :class="{'pb-0': i < (config.addresses.length - 1) && $vuetify.breakpoint.xs, 'list-complete-item': config.animation}">
+                    <v-col cols="12" sm="6" md="4" v-for="(address, i) in addresses" :key="address.id" :class="{'pb-0': i < (addresses.length - 1) && $vuetify.breakpoint.xs, 'list-complete-item': config.animation}">
                         <v-card>
                             <v-toolbar class="grey lighten-5" dense flat>
                                 <v-toolbar-title>
@@ -67,12 +67,25 @@
                     fab: {
                         hidden: true
                     },
-                    addresses : [],
                     animation : false
-                }
+                },
+                request: {
+
+                },
+                response: {
+                    message: '',
+                    errors : {}
+                },
+                addressesCacheCtr: 0
             }
         },
-        computed: {},
+        computed: {
+            // computed addresses
+            addresses() {
+                let ctr = this.addressesCacheCtr;
+                return this.$store.getters['auth/data/addresses'];
+            }
+        },
         methods: {
 
             /****************************************************************************************************
@@ -80,7 +93,7 @@
              * Confirm to delete selected delivery address
              */
             confirmDelete(i) {
-                let address = this.config.addresses[i];
+                let address = this.addresses[i];
                 this.$store.commit('dialog/confirm/show', {
                     title   : 'Delete Delivery Address',
                     prompt  : 'Do you really want to delete the following delivery address?<div class="mt-5"><small class="text-body-1 primary--text">' + address.address + '</small></div>',
@@ -96,7 +109,7 @@
                                 if(!response) return;
 
                                 if(response.data.deleted) {
-                                    this.config.addresses.splice(i, 1);
+                                    this.addresses.splice(i, 1);
                                 }
                                 this.$store.commit('dialog/confirm/hide');
                             }).catch(errors => {
@@ -108,22 +121,36 @@
             }
         },
         created() {
-            setTimeout(() => {
-                this.$store.commit('dialog/loader/show');
-                api_delivery_addr.index().then(response => {
-                    this.$store.commit('dialog/loader/hide');
-                    if(!response) return;
+            if(this.addresses == null) {
+                setTimeout(() => {
+                    this.$store.commit('dialog/loader/show');
+                    api_delivery_addr.index().then(response => {
+                        this.$store.commit('dialog/loader/hide');
+                        if(!response) return;
 
-                    this.config.addresses = response.data.addresses;
-                    // enable animation after a delay
-                    setTimeout(() => {
-                        this.config.animation = true;
-                    }, 500);
-                }).catch(errors => {
-                    this.$store.commit('dialog/loader/hide');
-                    this.$store.commit('dialog/error/show', errors);
-                });
-            }, 350);
+                        // commit to auth/data/addresses vuex store module
+                        this.$store.commit('auth/data/fill', {
+                            key : 'addresses',
+                            data: response.data.addresses
+                        });
+                        this.addressesCacheCtr += 1;
+
+                        // enable animation after a delay
+                        setTimeout(() => {
+                            this.config.animation = true;
+                        }, 500);
+                    }).catch(errors => {
+                        this.$store.commit('dialog/loader/hide');
+                        this.$store.commit('dialog/error/show', errors);
+                    });
+                }, 350);
+            }
+            else {
+                // enable animation after a delay
+                setTimeout(() => {
+                    this.config.animation = true;
+                }, 500);
+            }
         }
     }
 </script>
