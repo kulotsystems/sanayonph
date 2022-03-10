@@ -8,7 +8,7 @@
         </toolbar-main>
         <v-main class="secondary">
             <bg-secondary/>
-            <v-container class="pa-4 pa-sm-5">
+            <v-container class="pa-4 pa-sm-5" v-if="categories != null">
                 <!-- NO CATEGORIES -->
                 <template v-if="categories.length <= 0">
                     <dialog-info v-if="config.loaded">
