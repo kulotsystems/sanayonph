@@ -192,7 +192,17 @@ class OrderController extends Controller
 
         $order = $request->mddlwr_order;
 
-        if($order->status['payment']['status'] == Order::$PAYMENT_DECLINED) {
+        if($order->status['order']['status'] == Order::$ORDER_CANCELLED_BY_BUYER) {
+            throw ValidationException::withMessages([
+                'payment' => ['Order is already cancelled.']
+            ]);
+        }
+        else if($order->status['order']['status'] == Order::$ORDER_DECLINED_BY_SELLER) {
+            throw ValidationException::withMessages([
+                'payment' => ['Order is already declined.']
+            ]);
+        }
+        else if($order->status['payment']['status'] == Order::$PAYMENT_DECLINED) {
             throw ValidationException::withMessages([
                 'payment' => ['Current payment is declined.']
             ]);
@@ -348,7 +358,17 @@ class OrderController extends Controller
 
         $order = $request->mddlwr_order;
 
-        if($order->status['payment']['status'] == Order::$PAYMENT_DECLINED) {
+        if($order->status['order']['status'] == Order::$ORDER_CANCELLED_BY_BUYER) {
+            throw ValidationException::withMessages([
+                'payment' => ['Order is already cancelled.']
+            ]);
+        }
+        else if($order->status['order']['status'] == Order::$ORDER_DECLINED_BY_SELLER) {
+            throw ValidationException::withMessages([
+                'payment' => ['Order is already declined.']
+            ]);
+        }
+        else if($order->status['payment']['status'] == Order::$PAYMENT_DECLINED) {
             throw ValidationException::withMessages([
                 'payment' => ['Buyer\'s payment is declined.']
             ]);

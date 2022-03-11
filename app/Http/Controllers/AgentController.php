@@ -146,17 +146,20 @@ class AgentController extends Controller
             return response(['error' => 'ACCESS DENIED']);
         else {
             if($order = Order::find($request->order_id)) {
-                if($request->confirmed == 1) {
-                    if($order->status['payment']['status'] == Order::$PAYMENT_DECLINED) {
-                        return response(['error' => 'Payment for order [ ' . str_pad($order->id, 5, '0', STR_PAD_LEFT) . ' ] is already declined.']);
-                    }
-                    else if($order->status['order']['status'] == Order::$ORDER_DECLINED_BY_SELLER) {
-                        return response(['error' => 'Order [ ' . str_pad($order->id, 5, '0', STR_PAD_LEFT) . ' ] is already declined by seller.']);
-                    }
-                    else if($order->status['order']['status'] == Order::$ORDER_CANCELLED_BY_BUYER) {
-                        return response(['error' => 'Order [ ' . str_pad($order->id, 5, '0', STR_PAD_LEFT) . ' ] is already cancelled by buyer.']);
-                    }
-                    else {
+                if($order->status['order']['status'] == Order::$ORDER_DECLINED_BY_SELLER) {
+                    return response(['error' => 'Order [ ' . str_pad($order->id, 5, '0', STR_PAD_LEFT) . ' ] is already declined by seller.']);
+                }
+                else if($order->status['order']['status'] == Order::$ORDER_CANCELLED_BY_BUYER) {
+                    return response(['error' => 'Order [ ' . str_pad($order->id, 5, '0', STR_PAD_LEFT) . ' ] is already cancelled by buyer.']);
+                }
+                else if($order->status['payment']['status'] == Order::$PAYMENT_DECLINED) {
+                    return response(['error' => 'Payment for order [ ' . str_pad($order->id, 5, '0', STR_PAD_LEFT) . ' ] is already declined.']);
+                }
+                else if($order->status['payment']['status'] == Order::$PAYMENT_CONFIRMED) {
+                    return response(['error' => 'Payment for order [ ' . str_pad($order->id, 5, '0', STR_PAD_LEFT) . ' ] is already confirmed.']);
+                }
+                else {
+                    if($request->confirmed == 1) {
                         $order->update([
                             'payment_confirmed_at'     => now(),
                             'payment_declined_at'      => null,
@@ -168,24 +171,21 @@ class AgentController extends Controller
                             'done' => true
                         ]);
                     }
-                }
-                else {
-                    if($order->status['payment']['status'] == Order::$PAYMENT_CONFIRMED) {
-                        return response(['error' => 'Payment for order [ ' . str_pad($order->id, 5, '0', STR_PAD_LEFT) . ' ] is already confirmed.']);
+                    else {
+                        $order->update([
+                            'payment_declined_at'      => now(),
+                            'payment_declined_remarks' => $request->remarks,
+                            'payment_confirmed_at'     => null,
+                        ]);
+
+                        // increase stock
+                        $order->update_stock('increase');
+
+                        // decline payment
+                        return response([
+                            'done' => true
+                        ]);
                     }
-                    $order->update([
-                        'payment_declined_at'      => now(),
-                        'payment_declined_remarks' => $request->remarks,
-                        'payment_confirmed_at'     => null,
-                    ]);
-
-                    // increase stock
-                    $order->update_stock('increase');
-
-                    // decline payment
-                    return response([
-                        'done' => true
-                    ]);
                 }
             }
             else
