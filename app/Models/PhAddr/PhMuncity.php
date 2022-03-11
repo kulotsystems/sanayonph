@@ -13,8 +13,8 @@ class PhMuncity extends Model
 
     protected $table = 'ph_muncities';
 
-    // ALLOWED: 'BAAO', 'BALATAN', 'BATO', 'BUHI', 'BULA', 'IRIGA CITY', 'NABUA', ...
-    public static $allowed = [ 594, 595, 596, 598, 599, 609, 616 ];
+    // ALLOWED: 'LIBON', 'POLANGUI',    'BAAO', 'BALATAN', 'BATO', 'BUHI', 'BULA', 'IRIGA CITY', 'NABUA', ...
+    public static $allowed = [ 571, 577,   594, 595, 596, 598, 599, 609, 616 ];
 
     protected $hidden = [
         'province_id'
