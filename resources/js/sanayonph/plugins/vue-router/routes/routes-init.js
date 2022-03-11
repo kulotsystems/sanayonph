@@ -8,5 +8,13 @@ export default [
         meta     : {
             rules: routes.rules.anyone
         }
+    },
+    {
+        path     : '/about',
+        name     : 'about',
+        component: routes.load('Demo'),
+        meta     : {
+            rules: routes.rules.anyone
+        }
     }
 ];
