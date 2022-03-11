@@ -93,6 +93,9 @@
                         this.$store.commit('dialog/confirm/hide');
                         this.$store.commit('dialog/error/hide');
                         this.$store.commit('dialog/image/hide');
+
+                        // render chat
+                        this.renderChat(to);
                     } catch (e) {}
                 }
             },
@@ -238,6 +241,23 @@
                     this.$store.commit('dialog/message/hide');
                 }, 300);
                 window.open(this.$router.options.base + '?signed-out=1', '_self', null, true);
+            },
+
+
+            /****************************************************************************************************
+             * METHOD: RENDER CHAT
+             * Show or hide chat feature
+             */
+            renderChat(route)
+            {
+                if(this.$vuetify.breakpoint.mdAndUp)
+                    this.$store.commit('chat/show');
+                else {
+                    if (route.meta.chat)
+                        this.$store.commit('chat/show');
+                    else
+                        this.$store.commit('chat/hide');
+                }
             }
         },
         created() {
@@ -256,6 +276,9 @@
             api_auth.session().then(response => {
                 this.signIn();
             });
+
+            // render chat
+            this.renderChat(this.$route);
         }
     }
 </script>

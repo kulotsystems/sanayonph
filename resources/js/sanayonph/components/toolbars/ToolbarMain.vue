@@ -16,13 +16,16 @@
 
             <v-spacer></v-spacer>
 
+
             <!-- ACTION BUTTON -->
             <slot name="action"></slot>
+
 
             <!-- HOME BUTTON -->
             <v-btn icon color="primary" exact router :to="{ name: 'shop' }" v-if="($route.meta.back || customBackRoute != null) && !$slots.fab && !$slots.action && $route.name !== 'sign-up' && $route.name !== 'reset-password' && $route.name !== 'shop'">
                 <v-icon :left="hasCustomBack">home</v-icon>
             </v-btn>
+
 
             <!-- MENUS -->
             <slot name="menus"></slot>
@@ -68,7 +71,11 @@
             }
         },
         data() {
-            return {}
+            return {
+                config: {
+                    chat: true
+                }
+            }
         },
         methods : {
             goBack() {

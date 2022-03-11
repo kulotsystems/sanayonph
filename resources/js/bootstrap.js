@@ -39,10 +39,11 @@
 //     forceTLS: true
 // });
 
-// Messenger Plugin
-var chatbox = document.getElementById('fb-customer-chat');
-chatbox.setAttribute("page_id", "105900278416619");
-chatbox.setAttribute("attribution", "biz_inbox");
+// Render Messenger Chat Plugin
+let chatBox = document.getElementById('fb-customer-chat');
+chatBox.setAttribute("page_id"    , "105900278416619");
+chatBox.setAttribute("attribution", "biz_inbox");
+chatBox.setAttribute('theme_color', '#b75c08');
 window.fbAsyncInit = function() {
     FB.init({
         xfbml  : true,

@@ -373,6 +373,11 @@
             }
         },
         computed: {
+            // computed sheet open
+            sheetOpen() {
+                return this.config.buying || this.config.checkingOut;
+            },
+
             // computed product
             product() {
                 let ctr = this.productCacheCTR;
@@ -548,6 +553,15 @@
                 if(this.deliveryMethod != null)
                     bool = this.deliveryMethod.is_delivery;
                 return bool;
+            }
+        },
+        watch: {
+            // watch sheetOpen
+            sheetOpen() {
+                if(this.sheetOpen)
+                    this.$store.commit('chat/hide');
+                else
+                    this.$store.commit('chat/show');
             }
         },
         methods : {
