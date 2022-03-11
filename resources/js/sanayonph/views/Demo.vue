@@ -1,20 +1,22 @@
 <template>
     <v-app>
         <v-img
-            :src="config.about"
+            :src="$vuetify.breakpoint.smAndDown ? config.mobile : config.desktop"
         />
     </v-app>
 </template>
 
 <script>
-    import aboutIMG from '../assets/img/app/about.png';
+    import aboutDesktop from '../assets/img/app/about.png';
+    import aboutMobile  from '../assets/img/app/about-mobile.png';
 
     export default {
         name: 'Demo',
         data() {
             return {
                 config: {
-                    about: aboutIMG
+                    desktop: aboutDesktop,
+                    mobile : aboutMobile
                 }
             }
         }
