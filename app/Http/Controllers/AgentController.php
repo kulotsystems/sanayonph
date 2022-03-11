@@ -179,6 +179,8 @@ class AgentController extends Controller
                         'payment_confirmed_at'     => null,
                     ]);
 
+                    // increase stock
+                    $order->update_stock('increase');
 
                     // decline payment
                     return response([

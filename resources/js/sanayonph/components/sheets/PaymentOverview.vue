@@ -53,7 +53,7 @@
                                              :src="paymentStatus.screenshot != null ? $store.getters['path/paymentScreenshot'] + '/' + paymentStatus.screenshot : config.paymentPortrait"
                                         aspect-ratio="0.56"
                                     />
-                                    <v-card-actions v-if="!paymentConfirmed">
+                                    <v-card-actions v-if="!paymentConfirmed && !paymentDeclined">
                                         <v-spacer></v-spacer>
                                         <v-btn fab class="primary lighten-1" depressed x-small @click="$store.commit('dialog/cropper/show')">
                                             <v-icon>insert_photo</v-icon>
@@ -127,10 +127,15 @@
             }
         },
         computed: {
-            // computed payment confirmed or not
+            // computed payment confirmed
+            paymentDeclined() {
+                return this.paymentStatus != null ? this.paymentStatus.status === 'Declined' : false;
+            },
+
+            // computed payment confirmed
             paymentConfirmed() {
                 return this.paymentStatus != null ? this.paymentStatus.status === 'Confirmed' : false;
-            }
+            },
         },
         methods : {}
     }

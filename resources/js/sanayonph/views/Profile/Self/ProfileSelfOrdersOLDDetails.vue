@@ -101,7 +101,7 @@
                         <v-btn icon @click="config.cancelling = false" :style="{'visibility': config.btnCancel.loading ? 'hidden' : 'visible'}">
                             <v-icon>close</v-icon>
                         </v-btn>
-                    </v-card-title class="px-4">
+                    </v-card-title>
                     <v-card-text>
                         <template v-if="paymentConfirmed">
                             <p class="text-subtitle-2">
@@ -177,7 +177,7 @@
 
             <!-- ORDER CONFIRM/RECEIVE ACTIONS -->
             <template v-if="config.order != null">
-                <v-bottom-navigation v-if="!orderDeclined && !orderCancelled && !orderCompleted" class="block" grow app>
+                <v-bottom-navigation v-if="!paymentDeclined && !orderDeclined && !orderCancelled && !orderCompleted" class="block" grow app>
                     <button-action
                         label="Cancel Order"
                         icon="cancel_presentation"
@@ -260,7 +260,12 @@
             }
         },
         computed: {
-            // computed payment confirmed or not
+            // computed payment declined
+            paymentDeclined() {
+                return this.config.order.status.payment != null ? this.config.order.status.payment.status === 'Declined' : false;
+            },
+
+            // computed payment confirmed
             paymentConfirmed() {
                 return this.config.order.status.payment != null ? this.config.order.status.payment.status === 'Confirmed' : false;
             },
@@ -327,6 +332,7 @@
              * Handle emitted image upload event
              */
             uploadPhoto(formData) {
+                this.$store.commit('auth/data/purge', 'selfOrders');
                 api_order.screenshot(this.$route.params.order, formData).then(response => {
                     if(!response) return;
 

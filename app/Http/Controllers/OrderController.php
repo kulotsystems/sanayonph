@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use App\Models\Product;
 use App\Models\Sale;
 use App\Models\Store;
 use Carbon\Carbon;
@@ -151,6 +150,9 @@ class OrderController extends Controller
         $sale->price_after_service_fee     = $placed_order['computed']['priceAfterServiceFee'];
         $sale->save();
 
+        // decrease stock
+        $order->update_stock('decrease');
+
         return response([
             'ordered' =>  $order->id
         ]);
@@ -168,16 +170,8 @@ class OrderController extends Controller
     public function buyer_show(Request $request, $id)
     {
         $order = $request->mddlwr_order;
-        $order->delivery_method;
-        $order->payment_method;
-        $order->sales;
-        $order->makeVisible('sales');
-        $order->seller;
-        $order->makeVisible('seller');
-        $order->total;
-        $order->makeVisible('total');
         return response([
-            'order' => $order
+            'order' => $order->details_for('buyer')
         ]);
     }
 
@@ -198,7 +192,12 @@ class OrderController extends Controller
 
         $order = $request->mddlwr_order;
 
-        if($order->status['payment']['status'] == Order::$PAYMENT_CONFIRMED) {
+        if($order->status['payment']['status'] == Order::$PAYMENT_DECLINED) {
+            throw ValidationException::withMessages([
+                'payment' => ['Current payment is declined.']
+            ]);
+        }
+        else if($order->status['payment']['status'] == Order::$PAYMENT_CONFIRMED) {
             throw ValidationException::withMessages([
                 'payment' => ['Payment is already confirmed.']
             ]);
@@ -209,6 +208,9 @@ class OrderController extends Controller
                 'cancelled_by_buyer_at' => now(),
                 'reason_by_buyer'       => $request->remarks
             ]);
+
+            // increase stock
+            $order->update_stock('increase');
 
             return response([
                 'status' => $order->status
@@ -269,6 +271,11 @@ class OrderController extends Controller
                 'payment_method' => ['Payment is not through Gcash.']
             ]);
         }
+        else if($order->status['payment']['status'] == Order::$PAYMENT_DECLINED) {
+            throw ValidationException::withMessages([
+                'payment' => ['Current payment is declined.']
+            ]);
+        }
         else if($order->status['payment']['status'] == Order::$PAYMENT_CONFIRMED) {
             throw ValidationException::withMessages([
                 'payment' => ['Payment is already confirmed.']
@@ -319,16 +326,8 @@ class OrderController extends Controller
     public function seller_show(Request $request, $id)
     {
         $order = $request->mddlwr_order;
-        $order->delivery_method;
-        $order->payment_method;
-        $order->sales;
-        $order->makeVisible('sales');
-        $order->buyer;
-        $order->makeVisible('buyer');
-        $order->total_after_service_fee;
-        $order->makeVisible('total_after_service_fee');
         return response([
-            'order' => $order
+            'order' => $order->details_for('seller')
         ]);
     }
 
@@ -349,7 +348,12 @@ class OrderController extends Controller
 
         $order = $request->mddlwr_order;
 
-        if($order->status['payment']['status'] == Order::$PAYMENT_CONFIRMED) {
+        if($order->status['payment']['status'] == Order::$PAYMENT_DECLINED) {
+            throw ValidationException::withMessages([
+                'payment' => ['Buyer\'s payment is declined.']
+            ]);
+        }
+        else if($order->status['payment']['status'] == Order::$PAYMENT_CONFIRMED) {
             throw ValidationException::withMessages([
                 'payment' => ['Payment is already confirmed.']
             ]);
@@ -365,6 +369,9 @@ class OrderController extends Controller
                 'declined_by_seller_at' => now(),
                 'reason_by_seller'      => $request->remarks
             ]);
+
+            // increase stock
+            $order->update_stock('increase');
 
             return response([
                 'status' => $order->status
@@ -412,50 +419,6 @@ class OrderController extends Controller
                 throw ValidationException::withMessages([
                     'date_time' => ['Pickup date and time must be greater than current date and time.']
                 ]);
-            }
-
-            // check and update product stock
-            foreach ($order->sales as $sale) {
-                if($product = Product::find($sale->product_id)) {
-                    $variation_1 = $product->variations->where('index', 0)->first();
-                    $variation_2 = $product->variations->where('index', 1)->first();
-
-                    $arr_product_label = explode(', ', $sale->product_label);
-                    $price_stock = null;
-                    if(sizeof($arr_product_label) == 1) {
-                        if($product->price_stock_mode == 'var1_only') {
-                            $var1_item_label = $arr_product_label[0];
-                            if($item = $variation_1->items->where('label', $var1_item_label)->first())
-                                $price_stock = $product->prices_stocks->where('var1_item_index', $item->index)->first();
-                        }
-                        else if($product->price_stock_mode == 'var2_only') {
-                            $var2_item_label = $arr_product_label[0];
-                            if($item = $variation_2->items->where('label', $var2_item_label)->first())
-                                $price_stock = $product->prices_stocks->where('var2_item_index', $item->index)->first();
-                        }
-                    }
-                    else {
-                        $var1_item_label = $arr_product_label[0];
-                        $var2_item_label = $arr_product_label[1];
-                        $item1 = $variation_1->items->where('label', $var1_item_label)->first();
-                        $item2 = $variation_2->items->where('label', $var2_item_label)->first();
-                        if($item1 && $item2)
-                            $price_stock = $product->prices_stocks->where('var1_item_index', $item1->index)->where('var2_item_index', $item2->index)->first();
-                    }
-                    if($price_stock != null) {
-                        $remaining_stock = $price_stock->stock - $sale->quantity;
-                        if($remaining_stock < 0) {
-                            throw ValidationException::withMessages([
-                                'stock' => ['Ordered quantity (' . $sale->quantity . ') is greater than the remaining stock (' . $price_stock->stock . ') for "' . $sale->product_label . '" variation.']
-                            ]);
-                        }
-                        else {
-                            $price_stock->update([
-                                'stock' => $remaining_stock
-                            ]);
-                        }
-                    }
-                }
             }
 
             // update order

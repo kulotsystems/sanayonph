@@ -7,7 +7,7 @@
             <v-container class="pa-2 pa-sm-3">
                 <v-row v-if="config.order != null">
                     <!-- LEFT COLUMN -->
-                    <v-col cols="12" sm="6" md="6" class="pb-0" :class="{'pb-3': this.orderCancelled || this.orderDeclined}">
+                    <v-col cols="12" sm="6" md="6" class="pb-0" :class="{'pb-3': this.paymentDeclined || this.orderCancelled || this.orderDeclined}">
                         <!-- Order Status -->
                         <v-card>
                             <v-toolbar class="grey lighten-5" dense flat>
@@ -60,7 +60,7 @@
                     </v-col>
 
                     <!-- RIGHT COLUMN -->
-                    <v-col v-if="!orderDeclined && !orderCancelled" cols="12" sm="6" md="6" class="pb-0">
+                    <v-col v-if="!paymentDeclined && !orderDeclined && !orderCancelled" cols="12" sm="6" md="6" class="pb-0">
                         <!-- Payment Status -->
                         <v-card class="mb-3">
                             <v-toolbar class="grey lighten-5" dense flat>
@@ -266,7 +266,7 @@
 
             <!-- ORDER DECLINE/CONFIRM ACTIONS -->
             <template v-if="config.order != null">
-                <v-bottom-navigation v-if="!orderDeclined && !orderCancelled && !orderConfirmed && !orderForPickup && !orderCompleted" class="block" grow app>
+                <v-bottom-navigation v-if="!paymentDeclined && !orderDeclined && !orderCancelled && !orderConfirmed && !orderForPickup && !orderCompleted" class="block" grow app>
                     <button-action
                         label="Decline Order"
                         icon="cancel_presentation"
@@ -379,7 +379,12 @@
                 return time;
             },
 
-            // computed payment confirmed or not
+            // computed payment declined
+            paymentDeclined() {
+                return this.config.order.status.payment != null ? this.config.order.status.payment.status === 'Declined' : false;
+            },
+
+            // computed payment confirmed
             paymentConfirmed() {
                 return this.config.order.status.payment != null ? this.config.order.status.payment.status === 'Confirmed' : false;
             },
