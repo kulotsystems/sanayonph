@@ -1,5 +1,5 @@
 <template>
-    <v-btn :color="color" :type="type" :loading="loading" :disabled="disabled" depressed @click="click" :small="small" :large="large" :block="block" :rounded="rounded" :text="text" :class="className">
+    <v-btn :color="color" :type="type" :loading="loading" :disabled="disabled" depressed @click="click" :small="small" :large="large" :block="block" :rounded="rounded" :text="text" :outlined="outlined" :class="className">
         <v-icon left v-if="icon !== ''">{{ icon }}</v-icon>
         {{ label }}
         <template v-slot:loader>
@@ -54,6 +54,10 @@
                 default: false
             },
             text: {
+                type   : Boolean,
+                default: false
+            },
+            outlined: {
                 type   : Boolean,
                 default: false
             },
