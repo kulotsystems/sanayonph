@@ -11,9 +11,9 @@
                 @click="$emit('cancel')"
             />
             <button-action
-                icon="check"
                 v-if="$route.name === addRoute"
                 label="SAVE"
+                icon="save"
                 color="primary"
                 rounded
                 large
@@ -22,8 +22,8 @@
             />
             <button-action
                 v-else-if="$route.name === editRoute"
-                icon="check"
                 label="UPDATE"
+                icon="save"
                 color="primary"
                 rounded
                 large

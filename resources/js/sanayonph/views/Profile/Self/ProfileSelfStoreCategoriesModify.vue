@@ -3,8 +3,8 @@
         <dialogs/>
         <snackbar-bottom/>
         <toolbar-main>
-            <button-action slot="action"      v-if="$route.name === config.addRoute"  label="SAVE"   icon="check" rounded text :loading="config.btnAdd.loading"    :disabled="!dirty" @click="storeCategory" />
-            <button-action slot="action" v-else-if="$route.name === config.editRoute" label="UPDATE" icon="check" rounded text :loading="config.btnUpdate.loading" :disabled="!dirty" @click="updateCategory"/>
+            <button-action slot="action"      v-if="$route.name === config.addRoute"  label="SAVE"   icon="save" rounded text outlined :loading="config.btnAdd.loading"    :disabled="!dirty" @click="storeCategory" />
+            <button-action slot="action" v-else-if="$route.name === config.editRoute" label="UPDATE" icon="save" rounded text outlined :loading="config.btnUpdate.loading" :disabled="!dirty" @click="updateCategory"/>
         </toolbar-main>
         <v-main class="secondary">
             <bg-secondary/>
