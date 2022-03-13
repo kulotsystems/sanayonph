@@ -7,6 +7,7 @@
                 <span v-if="hasCustomBack">{{ customBack }}</span>
             </v-btn>
 
+
             <!-- TITLE -->
             <v-app-bar-title v-if="$route.meta.title && !hideTitle" class="text-button primary--text pl-0">
                 {{ customTitle === '' ? $route.meta.title : customTitle }}
@@ -32,14 +33,14 @@
 
             <!-- FAB -->
             <slot name="fab" v-slot:extension></slot>
-
-
-            <!-- TABS -->
-            <template v-slot:extension v-if="$store.state.tab[$route.name] != null && $route.params.tab != null">
-                <slot name="tabs"></slot>
-            </template>
-
         </v-container>
+
+        <!-- TABS -->
+        <template v-slot:extension v-if="$store.state.tab[$route.name] != null && $route.params.tab != null">
+            <v-container>
+                <slot name="tabs"></slot>
+            </v-container>
+        </template>
     </v-app-bar>
 </template>
 
