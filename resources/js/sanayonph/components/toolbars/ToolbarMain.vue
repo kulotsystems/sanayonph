@@ -1,7 +1,6 @@
 <template>
-    <nav>
-        <v-app-bar class="white" app>
-
+    <v-app-bar class="white" app>
+        <v-container class="pa-0 fill-height">
             <!-- BACK BUTTON -->
             <v-btn :icon="!hasCustomBack" :text="hasCustomBack" v-if="$route.meta.back || customBackRoute != null" @click="goBack">
                 <v-icon :left="hasCustomBack">arrow_back</v-icon>
@@ -40,8 +39,8 @@
                 <slot name="tabs"></slot>
             </template>
 
-        </v-app-bar>
-    </nav>
+        </v-container>
+    </v-app-bar>
 </template>
 
 <script>
