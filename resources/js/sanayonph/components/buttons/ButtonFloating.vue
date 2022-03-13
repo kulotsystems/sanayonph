@@ -81,5 +81,10 @@
 </script>
 
 <style scoped>
-
+    .v-btn--left {
+        left: 0 !important;
+    }
+    .v-btn--right {
+        right: 0 !important;
+    }
 </style>

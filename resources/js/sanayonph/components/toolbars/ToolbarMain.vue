@@ -32,7 +32,9 @@
 
 
             <!-- FAB -->
-            <slot name="fab" v-slot:extension></slot>
+            <div style="position: relative; width: 100%;">
+                <slot name="fab" v-slot:extension></slot>
+            </div>
         </v-container>
 
         <!-- TABS -->
