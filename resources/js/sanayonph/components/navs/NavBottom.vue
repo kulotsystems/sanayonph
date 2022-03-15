@@ -22,13 +22,13 @@
                                 name: 'shop'
                             }
                         },
-                        // {
-                        //     label: 'Explore',
-                        //     icon : 'star',
-                        //     route: {
-                        //         name: 'explore'
-                        //     }
-                        // },
+                        {
+                            label: 'Explore',
+                            icon : 'star',
+                            route: {
+                                name: 'explore'
+                            }
+                        },
                         {
                             label: 'Me',
                             icon : 'person',

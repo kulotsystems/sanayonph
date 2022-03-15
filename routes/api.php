@@ -16,6 +16,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ExploreController;
 
 /*
 |--------------------------------------------------------------------------
@@ -89,6 +90,10 @@ Route::group(['prefix' => 'shop'], function() {
     Route::get('/stores', [StoreController::class, 'stores']);
 });
 
+// GROUP :: EXPLORE
+Route::group(['prefix' => 'explore'], function() {
+    Route::get('/explore', [ExploreController::class, 'index']);
+});
 
 // MIDDLEWARE :: Auth Sanctum
 Route::middleware(['auth:sanctum'])->group(function() {
