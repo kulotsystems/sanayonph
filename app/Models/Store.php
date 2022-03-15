@@ -69,6 +69,21 @@ class Store extends Model
 
 
     /****************************************************************************************************
+     * Get stores with published products
+     *
+     * @return Store[]
+     */
+    public static function published()
+    {
+        return Store::whereHas('categories', function($query) {
+            $query->whereHas('products', function($query) {
+                $query->where('is_published', 1);
+            });
+        })->where('id', '>=', app()->environment('production') ? 3 : 1);
+    }
+
+
+    /****************************************************************************************************
      * Get product details
      *
      * @param Product $product
