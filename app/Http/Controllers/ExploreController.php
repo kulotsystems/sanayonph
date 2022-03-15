@@ -4,42 +4,46 @@ namespace App\Http\Controllers;
 
 use App\Models\Store;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class ExploreController extends Controller
 {
     /****************************************************************************************************
+     * Perform search
+     *
      * @param Request $request
+     * @return Response
      */
-    public function index(Request $request){
-        
-        # Get all store first for testing
-        $stores = [];
-        $min_id = app()->environment('production') ? 3 : 1;
-        foreach (Store::where('id', '>=', $min_id)->get() as $store) {
-            $include = false;
-            foreach ($store->categories as $category) {
-                if($category->products->where('is_published', 1)->count() > 0) {
-                    $include = true;
-                    break;
-                }
-            }
+    public function index(Request $request) {
+        $request->validate([
+            'query' => 'string|max:255'
+        ]);
+        $q = $request['query'];
 
-            if($include) {
-                array_push($stores, [
-                    'store'   => $store->only('id', 'slug'),
-                    'user'    => $store->user->seller_info(),
-                    'address' => $store->user->delivery_addresses->first()->muncity_address()
-                ]);
-            }
+        // search stores
+        $stores = [];
+        $result = Store::published()
+            ->whereHas('user', function($query) use ($q) {
+                $query
+                    ->where('first_name' , 'like', '%'.$q.'%')
+                    ->orWhere('middle_name', 'like', '%'.$q.'%')
+                    ->orWhere('last_name'  , 'like', '%'.$q.'%');
+            })->get();
+        foreach ($result as $store) {
+            array_push($stores, [
+                'store'   => $store->only('id', 'slug'),
+                'user'    => $store->user->seller_info(),
+                'address' => $store->user->delivery_addresses->first()->muncity_address()
+            ]);
         }
 
-        # No products muna hehe...
+        // No products yet
         $products = [];
 
         return response([
             'stores'    => $stores,
             'products'  => $products
         ]);
-
     }
 }

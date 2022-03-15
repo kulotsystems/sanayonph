@@ -162,8 +162,7 @@
         components: {
             'dialogs'     : () => import('../../components/dialogs/Dialogs.vue'),
             'toolbar-main': () => import('../../components/toolbars/ToolbarMain.vue'),
-            'nav-bottom'  : () => import('../../components/navs/NavBottom.vue'),
-            'loader-soon' : () => import('../../components/loaders/LoaderSoon.vue'),
+            'nav-bottom'  : () => import('../../components/navs/NavBottom.vue')
         },
         data() {
             return {
