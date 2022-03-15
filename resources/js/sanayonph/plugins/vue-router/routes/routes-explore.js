@@ -6,7 +6,7 @@ export default [
         name     : 'explore',
         component: routes.load('Explore/Explore'),
         meta     : {
-            rules: routes.rules.user,
+            rules: routes.rules.anyone,
             title: 'Explore',
             chat : true
         }
