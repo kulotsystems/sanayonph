@@ -4,7 +4,7 @@ const  url = '/api/explore';
 export default {
 
     query(query) {
-        return api.get(url, {params: query});
+        return api.get(url, {params: { query: query }});
     }
 
 }
