@@ -1,5 +1,5 @@
 <template>
-    <v-app-bar class="white" app>
+    <v-app-bar class="white pr-1 pr-sm-0" app>
         <v-row>
             <v-container class="pa-0 fill-height">
                 <!-- BACK BUTTON -->
@@ -31,20 +31,19 @@
                 <!-- MENUS -->
                 <slot name="menus"></slot>
 
-
                 <!-- FAB -->
-                <div style="position: relative; width: 100%;">
+                <div v-if="$slots.fab" style="position: relative; width: 100%;">
                     <slot name="fab" v-slot:extension></slot>
                 </div>
             </v-container>
-
-            <!-- TABS -->
-            <template v-slot:extension v-if="$store.state.tab[$route.name] != null && $route.params.tab != null">
-                <v-container>
-                    <slot name="tabs"></slot>
-                </v-container>
-            </template>
         </v-row>
+
+        <!-- TABS -->
+        <template v-slot:extension v-if="$slots.tabs && $store.state.tab[$route.name] != null && $route.params.tab != null">
+            <v-container>
+                <slot name="tabs"></slot>
+            </v-container>
+        </template>
     </v-app-bar>
 </template>
 
