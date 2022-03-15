@@ -1,44 +1,51 @@
 <template>
-    <nav>
-        <v-app-bar class="white" app>
-
-            <!-- BACK BUTTON -->
-            <v-btn :icon="!hasCustomBack" :text="hasCustomBack" v-if="$route.meta.back || customBackRoute != null" @click="goBack">
-                <v-icon :left="hasCustomBack">arrow_back</v-icon>
-                <span v-if="hasCustomBack">{{ customBack }}</span>
-            </v-btn>
-
-            <!-- TITLE -->
-            <v-app-bar-title v-if="$route.meta.title && !hideTitle" class="text-button primary--text pl-0">
-                {{ customTitle === '' ? $route.meta.title : customTitle }}
-            </v-app-bar-title>
+    <v-app-bar class="white" app>
+        <v-row>
+            <v-container class="pa-0 fill-height">
+                <!-- BACK BUTTON -->
+                <v-btn :icon="!hasCustomBack" :text="hasCustomBack" v-if="$route.meta.back != null || customBackRoute != null" @click="goBack">
+                    <v-icon :left="hasCustomBack">arrow_back</v-icon>
+                    <span v-if="hasCustomBack">{{ customBack }}</span>
+                </v-btn>
 
 
-            <v-spacer></v-spacer>
-
-            <!-- ACTION BUTTON -->
-            <slot name="action"></slot>
-
-            <!-- HOME BUTTON -->
-            <v-btn icon color="primary" exact router :to="{ name: 'shop' }" v-if="($route.meta.back || customBackRoute != null) && !$slots.fab && !$slots.action && $route.name !== 'sign-up' && $route.name !== 'reset-password' && $route.name !== 'shop'">
-                <v-icon :left="hasCustomBack">home</v-icon>
-            </v-btn>
-
-            <!-- MENUS -->
-            <slot name="menus"></slot>
+                <!-- TITLE -->
+                <v-app-bar-title v-if="$route.meta.title && !hideTitle" class="text-button primary--text pl-0" :class="{'pl-5': $route.meta.back == null && customBackRoute == null}">
+                    {{ customTitle === '' ? $route.meta.title : customTitle }}
+                </v-app-bar-title>
 
 
-            <!-- FAB -->
-            <slot name="fab" v-slot:extension></slot>
+                <v-spacer></v-spacer>
 
+
+                <!-- ACTION BUTTON -->
+                <slot name="action"></slot>
+
+
+                <!-- HOME BUTTON -->
+                <v-btn icon color="primary" exact router :to="{ name: 'shop' }" v-if="($route.meta.back || customBackRoute != null) && !$slots.fab && !$slots.action && $route.name !== 'sign-up' && $route.name !== 'reset-password' && $route.name !== 'shop'">
+                    <v-icon :left="hasCustomBack">home</v-icon>
+                </v-btn>
+
+
+                <!-- MENUS -->
+                <slot name="menus"></slot>
+
+
+                <!-- FAB -->
+                <div style="position: relative; width: 100%;">
+                    <slot name="fab" v-slot:extension></slot>
+                </div>
+            </v-container>
 
             <!-- TABS -->
             <template v-slot:extension v-if="$store.state.tab[$route.name] != null && $route.params.tab != null">
-                <slot name="tabs"></slot>
+                <v-container>
+                    <slot name="tabs"></slot>
+                </v-container>
             </template>
-
-        </v-app-bar>
-    </nav>
+        </v-row>
+    </v-app-bar>
 </template>
 
 <script>
@@ -68,7 +75,11 @@
             }
         },
         data() {
-            return {}
+            return {
+                config: {
+                    chat: true
+                }
+            }
         },
         methods : {
             goBack() {

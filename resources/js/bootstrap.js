@@ -38,3 +38,28 @@
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     forceTLS: true
 // });
+
+// Render Messenger Chat Plugin
+if(window.location.hostname === 'www.sanayonph.com') {
+    try {
+        let chatBox = document.getElementById('fb-customer-chat');
+        chatBox.setAttribute("page_id", "105900278416619");
+        chatBox.setAttribute("attribution", "biz_inbox");
+        chatBox.setAttribute('theme_color', '#b75c08');
+        window.fbAsyncInit = function () {
+            FB.init({
+                xfbml: true,
+                version: 'v13.0'
+            });
+        };
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s);
+            js.id = id;
+            js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    } catch(e) {}
+
+}

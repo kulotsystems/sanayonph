@@ -7,7 +7,8 @@ export default [
         component: routes.load('Shop/Shop'),
         meta     : {
             rules: routes.rules.anyone,
-            title: 'Shop'
+            title: 'Shop',
+            chat : true
         }
     },
 ];

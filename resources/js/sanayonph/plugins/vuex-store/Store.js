@@ -14,6 +14,7 @@ Vue.use(Vuex);
 
 // --- MODULES ------------------------------------------------------------
 import auth     from './modules/store-auth.js';
+import chat     from './modules/store-chat.js';
 import dialog   from './modules/store-dialog.js';
 import env      from './modules/store-env.js';
 import form     from './modules/store-form.js';
@@ -45,6 +46,7 @@ export default new Vuex.Store({
 
     modules: {
         auth,
+        chat,
         dialog,
         env ,
         form,

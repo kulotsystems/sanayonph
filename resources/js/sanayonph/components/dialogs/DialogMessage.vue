@@ -4,7 +4,7 @@
             <v-card-title>
                 <span v-html="dialog.title"></span>
                 <v-spacer></v-spacer>
-                <v-btn v-if="dialog.callback.async && !dialog.persistent" @click="$store.commit('dialog/message/hide')" :disabled="dialog.btnOk.loading" icon>
+                <v-btn v-if="dialog.callback.async && !dialog.persistent || !dialog.callback.async" @click="$store.commit('dialog/message/hide')" :disabled="dialog.btnOk.loading" icon>
                     <v-icon>close</v-icon>
                 </v-btn>
             </v-card-title>

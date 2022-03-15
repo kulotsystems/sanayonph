@@ -13,8 +13,8 @@ class PhProvince extends Model
 
     protected $table = 'ph_provinces';
 
-    // ALLOWED: 'CAMARINES SUR', ...
-    public static $allowed = [ 29 ];
+    // ALLOWED: 'ALBAY', 'CAMARINES SUR', ...
+    public static $allowed = [ 27, 29 ];
 
     protected $hidden = [
         'region_id'

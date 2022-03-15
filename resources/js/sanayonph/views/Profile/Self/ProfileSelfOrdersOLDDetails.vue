@@ -8,7 +8,7 @@
             <v-container class="pa-2 pa-sm-3">
                 <v-row v-if="config.order != null">
                     <!-- LEFT COLUMN -->
-                    <v-col cols="12" sm="6" md="6" class="pb-0">
+                    <v-col cols="12" sm="6" md="6" class="pb-0" :class="{'pb-3': this.orderCancelled || this.orderDeclined}">
                         <v-card>
                             <v-toolbar class="grey lighten-5" dense flat>
                                 <v-icon class="grey--text text--lighten-1 mr-1" small>{{ $store.getters['icon/state'].order }}</v-icon>
@@ -101,7 +101,7 @@
                         <v-btn icon @click="config.cancelling = false" :style="{'visibility': config.btnCancel.loading ? 'hidden' : 'visible'}">
                             <v-icon>close</v-icon>
                         </v-btn>
-                    </v-card-title class="px-4">
+                    </v-card-title>
                     <v-card-text>
                         <template v-if="paymentConfirmed">
                             <p class="text-subtitle-2">
@@ -177,24 +177,28 @@
 
             <!-- ORDER CONFIRM/RECEIVE ACTIONS -->
             <template v-if="config.order != null">
-                <v-bottom-navigation v-if="!orderDeclined && !orderCancelled && !orderCompleted" class="block" grow app>
+                <v-bottom-navigation v-if="!paymentDeclined && !orderDeclined && !orderCancelled && !orderCompleted" class="block" grow app>
                     <button-action
                         label="Cancel Order"
+                        icon="cancel_presentation"
                         class="text-body-1"
                         :class="{'blurred': paymentConfirmed}"
+                        :loading="config.btnCancelActivator.loading"
                         rounded
                         large
                         text
-                        @click="config.cancelling = true"
+                        @click="attempt(false)"
                     />
                     <button-action
                         label="Order Received"
+                        icon="done_outline"
                         class="text-body-1"
                         :class="{'blurred': !orderForPickup}"
+                        :loading="config.btnReceiveActivator.loading"
                         rounded
                         large
                         text
-                        @click="receiveOrder"
+                        @click="attempt(true)"
                     />
                 </v-bottom-navigation>
             </template>
@@ -232,6 +236,12 @@
                     review_remarks: {
                         max: 300
                     },
+                    btnCancelActivator: {
+                        loading: false
+                    },
+                    btnReceiveActivator: {
+                        loading: false
+                    },
                     btnCancel: {
                         loading: false
                     },
@@ -250,7 +260,12 @@
             }
         },
         computed: {
-            // computed payment confirmed or not
+            // computed payment declined
+            paymentDeclined() {
+                return this.config.order.status.payment != null ? this.config.order.status.payment.status === 'Declined' : false;
+            },
+
+            // computed payment confirmed
             paymentConfirmed() {
                 return this.config.order.status.payment != null ? this.config.order.status.payment.status === 'Confirmed' : false;
             },
@@ -277,10 +292,47 @@
         },
         methods : {
             /****************************************************************************************************
+             * METHOD: ATTEMPT CANCEL / RECEIVE
+             * Fetch fresh order details, then attempt to cancel or receive order
+             */
+            attempt(receiving) {
+                if((!receiving && !this.config.btnCancelActivator.loading) || (receiving && !this.config.btnReceiveActivator.loading)) {
+                    if(!receiving)
+                        this.config.btnCancelActivator.loading = true;
+                    else
+                        this.config.btnReceiveActivator.loading = true;
+                    api_order.buyerShow(this.$route.params.order).then(response => {
+                        if(!response) return;
+
+                        this.config.order = response.data.order;
+                        this.$store.commit('auth/data/purge', 'selfOrders');
+                        if(!receiving) {
+                            this.config.btnCancelActivator.loading = false;
+                            this.config.cancelling = true;
+                        }
+                        else {
+                            this.config.btnReceiveActivator.loading = false;
+                            this.receiveOrder();
+                        }
+                    }).catch(errors => {
+                        if(!receiving)
+                            this.config.btnCancelActivator.loading = false;
+                        else
+                            this.config.btnReceiveActivator.loading = false;
+                        this.$store.commit('dialog/error/show', errors);
+                        this.response.message = errors.response.data.message;
+                        this.response.errors  = errors.response.data.errors;
+                    });
+                }
+            },
+
+
+            /****************************************************************************************************
              * METHOD: UPLOAD PHOTO
              * Handle emitted image upload event
              */
             uploadPhoto(formData) {
+                this.$store.commit('auth/data/purge', 'selfOrders');
                 api_order.screenshot(this.$route.params.order, formData).then(response => {
                     if(!response) return;
 
@@ -309,6 +361,7 @@
 
                         if(response.data.status) {
                             this.config.order.status = response.data.status;
+                            this.$store.commit('auth/data/purge', 'selfOrders');
                             this.config.cancelling = false;
                         }
                         this.config.btnCancel.loading = false;
@@ -345,6 +398,7 @@
 
                                     if(response.data.status) {
                                         this.config.order.status = response.data.status;
+                                        this.$store.commit('auth/data/purge', 'selfOrders');
                                         this.$store.commit('dialog/confirm/hide');
                                     }
                                 }).catch(errors => {

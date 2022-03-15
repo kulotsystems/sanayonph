@@ -114,7 +114,9 @@
                             <v-chip
                                 v-for="(item, index) in product.variations[0].items"
                                 :key="item.id"
-                                :color="request.var1_index === index ? 'primary' : ''"
+                                :color="request.var1_index === index || item.disabled ? 'primary' : ''"
+                                :disabled="item.disabled"
+                                :outlined="item.disabled"
                                 class="ma-1"
                                 @click="request.var1_index = index"
                             >
@@ -127,7 +129,9 @@
                             <v-chip
                                 v-for="(item, index) in product.variations[1].items"
                                 :key="item.id"
-                                :color="request.var2_index === index ? 'primary' : ''"
+                                :color="request.var2_index === index || item.disabled ? 'primary' : ''"
+                                :disabled="item.disabled"
+                                :outlined="item.disabled"
                                 class="ma-1"
                                 @click="request.var2_index = index"
                             >
@@ -369,6 +373,11 @@
             }
         },
         computed: {
+            // computed sheet open
+            sheetOpen() {
+                return this.config.buying || this.config.checkingOut;
+            },
+
             // computed product
             product() {
                 let ctr = this.productCacheCTR;
@@ -546,6 +555,15 @@
                 return bool;
             }
         },
+        watch: {
+            // watch sheetOpen
+            sheetOpen() {
+                if(this.sheetOpen)
+                    this.$store.commit('chat/hide');
+                else
+                    this.$store.commit('chat/show');
+            }
+        },
         methods : {
             /****************************************************************************************************
              * METHOD: DECREASE QUANTITY
@@ -587,8 +605,7 @@
                                 action: () => {
                                     window.open(this.$router.history.base + '?next=' + encodeURI(this.$route.path), '_self');
                                 }
-                            },
-                            persistent: true
+                            }
                         });
                     }
 
@@ -635,26 +652,52 @@
                 if(this.config.deliveryAddresses.length <= 0) {
                     this.$store.commit('dialog/message/show', {
                         title : 'Notice',
-                        prompt: 'Please set at least one <span class="primary--text">Delivery Address</span> first.',
+                        prompt: 'Please set at least one <span class="primary--text">Delivery Addresss</span> first.',
                         okIcon : this.$store.getters['icon/state'].address,
                         okLabel: 'Addresses',
                         callback: {
                             action: () => {
                                 this.$router.replace({ name: 'profile-delivery-addresses', params: { username: this.$store.getters['auth/user'].username } });
                             }
-                        },
-                        persistent: true
+                        }
                     });
                 }
                 else {
                     this.config.buying = true;
 
-                    // automatically select first variations
+                    // enable or disable variation items
+                    if(this.product.price_stock_mode === 'var1_only' || this.product.price_stock_mode === 'var2_only') {
+                        let index = this.product.price_stock_mode === 'var1_only' ? 0 : 1;
+                        for(let i=0; i<this.product.variations[index].items.length; i++) {
+                            let disabled = false;
+                            for(let j=0; j<this.product.prices_stocks.length; j++) {
+                                if(this.product.variations[index].items[i].index === this.product.prices_stocks[j][`var${index + 1}_item_index`]) {
+                                    disabled = this.product.prices_stocks[j].stock <= 0;
+                                    break;
+                                }
+                            }
+                            this.product.variations[index].items[i].disabled = disabled;
+                        }
+                    }
+
+                    // automatically select first available variations
                     if(this.request.var1_index < 0 && this.request.var2_index < 0) {
-                        if(this.product.price_stock_mode === 'var1_only' || this.product.price_stock_mode === 'both_vars')
-                            this.request.var1_index = 0;
-                        if(this.product.price_stock_mode === 'var2_only' || this.product.price_stock_mode === 'both_vars')
-                            this.request.var2_index = 0;
+                        if(this.product.price_stock_mode === 'var1_only' || this.product.price_stock_mode === 'both_vars') {
+                            for(let i=0; i<this.product.variations[0].items.length; i++) {
+                                if(!this.product.variations[0].items[i].disabled) {
+                                    this.request.var1_index = i;
+                                    break;
+                                }
+                            }
+                        }
+                        if(this.product.price_stock_mode === 'var2_only' || this.product.price_stock_mode === 'both_vars') {
+                            for(let i=0; i<this.product.variations[1].items.length; i++) {
+                                if(!this.product.variations[1].items[i].disabled) {
+                                    this.request.var2_index = i;
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -695,6 +738,7 @@
 
                         if(response.data.ordered) {
                             this.config.checkingOut = false;
+                            this.$store.commit('auth/data/purge', 'selfOrders');
                             this.$store.commit('dialog/message/show', {
                                 title   : 'Order Placed!',
                                 prompt  : 'You have successfully place an order for this product.',

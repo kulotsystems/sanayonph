@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Validation\ValidationException;
 
 class Order extends Model
 {
@@ -26,6 +27,7 @@ class Order extends Model
     public static $ORDER_CANCELLED_BY_BUYER  = 'Cancelled by buyer';
     public static $ORDER_DECLINED_BY_SELLER  = 'Declined by seller';
     public static $ORDER_FOR_PAYMENT         = 'For payment';
+    public static $ORDER_PAYMENT_DECLINED    = 'Payment Declined';
     public static $ORDER_FOR_CONFIRMATION    = 'For confirmation';
     public static $ORDER_FOR_DELIVERY        = 'For delivery';
     public static $ORDER_FOR_PICKUP          = 'For pickup / meetup';
@@ -342,6 +344,11 @@ class Order extends Model
         else if($status['payment']['status'] && $status['payment']['status'] == self::$PAYMENT_CONFIRMED) {
             $status['order']['status'] = self::$ORDER_FOR_CONFIRMATION;
         }
+        else if($status['payment']['status'] && $status['payment']['status'] == self::$PAYMENT_DECLINED) {
+            $status['order']['status']    = self::$ORDER_PAYMENT_DECLINED;
+            $status['order']['date_time'] = Carbon::parse($this->payment_declined_at)->toDayDateTimeString();
+            $status['order']['remarks']   = $this->payment_declined_remarks;
+        }
         else if($status['payment']['status'] && $status['payment']['status'] != self::$PAYMENT_NOT_AVAILABLE) {
             $status['order']['status'] = self::$ORDER_FOR_PAYMENT;
         }
@@ -349,4 +356,102 @@ class Order extends Model
         return $status;
     }
 
+
+    /****************************************************************************************************
+     * Order details for buyer
+     *
+     * @param $person
+     * @return Order
+     */
+    public function details_for($person)
+    {
+        $order = $this;
+        $order->delivery_method;
+        $order->payment_method;
+        $order->sales;
+        $order->makeVisible('sales');
+
+        if($person == 'buyer') {
+            $order->seller;
+            $order->makeVisible('seller');
+            $order->total;
+            $order->makeVisible('total');
+        }
+        else if($person == 'seller') {
+            $order->buyer;
+            $order->makeVisible('buyer');
+            $order->total_after_service_fee;
+            $order->makeVisible('total_after_service_fee');
+        }
+        return $order;
+    }
+
+
+    /****************************************************************************************************
+     * Decrease or increase stock of ordered products
+     *
+     * @param string $mode - 'decrease' or 'increase'
+     * @return void
+     * @throws ValidationException
+     */
+    public function update_stock($mode)
+    {
+        $order = $this;
+
+        // loop through sales
+        foreach ($order->sales as $sale) {
+            if($product = Product::find($sale->product_id)) {
+                // get variations
+                $variation_1 = $product->variations->where('index', 0)->first();
+                $variation_2 = $product->variations->where('index', 1)->first();
+                $arr_product_label = explode(', ', $sale->product_label);
+
+                // search for $price_stock
+                $price_stock = null;
+                if(sizeof($arr_product_label) == 1) {
+                    if($product->price_stock_mode == 'var1_only') {
+                        $var1_item_label = $arr_product_label[0];
+                        if($item = $variation_1->items->where('label', $var1_item_label)->first())
+                            $price_stock = $product->prices_stocks->where('var1_item_index', $item->index)->first();
+                    }
+                    else if($product->price_stock_mode == 'var2_only') {
+                        $var2_item_label = $arr_product_label[0];
+                        if($item = $variation_2->items->where('label', $var2_item_label)->first())
+                            $price_stock = $product->prices_stocks->where('var2_item_index', $item->index)->first();
+                    }
+                }
+                else {
+                    $var1_item_label = $arr_product_label[0];
+                    $var2_item_label = $arr_product_label[1];
+                    $item1 = $variation_1->items->where('label', $var1_item_label)->first();
+                    $item2 = $variation_2->items->where('label', $var2_item_label)->first();
+                    if($item1 && $item2)
+                        $price_stock = $product->prices_stocks->where('var1_item_index', $item1->index)->where('var2_item_index', $item2->index)->first();
+                }
+
+                // modify $price_stock
+                if($price_stock != null) {
+                    if($mode == 'decrease') {
+                        $remaining_stock = $price_stock->stock - $sale->quantity;
+                        if($remaining_stock < 0) {
+                            throw ValidationException::withMessages([
+                                'stock' => ['Ordered quantity (' . $sale->quantity . ') is greater than the remaining stock (' . $price_stock->stock . ') for "' . $sale->product_label . '" variation.']
+                            ]);
+                        }
+                        else {
+                            $price_stock->update([
+                                'stock' => $remaining_stock
+                            ]);
+                        }
+                    }
+                    else if($mode == 'increase') {
+                        $remaining_stock = $price_stock->stock + $sale->quantity;
+                        $price_stock->update([
+                            'stock' => $remaining_stock
+                        ]);
+                    }
+                }
+            }
+        }
+    }
 }

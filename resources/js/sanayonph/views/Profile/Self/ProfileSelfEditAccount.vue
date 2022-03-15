@@ -38,8 +38,8 @@
         <v-row class="mt-3" dense>
             <v-col cols="12" align="right">
                 <button-action
-                    icon="check"
                     label="SAVE"
+                    icon="save"
                     color="primary"
                     rounded
                     large

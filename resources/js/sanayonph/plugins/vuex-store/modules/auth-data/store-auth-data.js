@@ -2,10 +2,11 @@ export default {
     namespaced: true,
 
     state: {
-        addresses : null,
-        categories: null,
-        products  : null,
-        orders    : null
+        addresses  : null,
+        categories : null,
+        products   : null,
+        selfOrders : null,
+        storeOrders: null
     },
 
     getters: {
@@ -18,8 +19,11 @@ export default {
         products: (state) => {
             return state.products;
         },
-        orders: (state) => {
-            return state.orders;
+        selfOrders: (state) => {
+            return state.selfOrders;
+        },
+        storeOrders: (state) => {
+            return state.storeOrders;
         },
     },
 

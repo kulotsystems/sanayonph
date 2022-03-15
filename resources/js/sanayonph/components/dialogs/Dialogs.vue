@@ -4,6 +4,7 @@
         <dialog-message/>
         <dialog-confirm/>
         <dialog-error/>
+        <dialog-image/>
     </div>
 </template>
 
@@ -15,6 +16,7 @@
             'dialog-message' : () => import('./DialogMessage.vue'),
             'dialog-confirm' : () => import('./DialogConfirm.vue'),
             'dialog-error'   : () => import('./DialogError.vue'),
+            'dialog-image'   : () => import('./DialogImage.vue')
         },
         props: {
             comingSoon: {

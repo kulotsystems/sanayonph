@@ -8,6 +8,7 @@ export default [
         meta     : {
             rules: routes.rules.anyone,
             title: 'Profile',
+            chat : true
         }
     },
     {
@@ -194,7 +195,8 @@ export default [
                 meta     : {
                     rules: routes.rules.anyone,
                     back : 'profile-store',
-                    title: 'Products'
+                    title: 'Products',
+                    chat : true
                 }
             },
             //=====|||
@@ -228,6 +230,7 @@ export default [
                             rules     : routes.rules.anyone,
                             back      : 'profile-store-products',
                             title     : 'Product Details',
+                            chat      : true
                         }
                     },
 

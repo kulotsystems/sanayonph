@@ -5,8 +5,8 @@
         <snackbar-bottom/>
         <toolbar-main>
             <tab-product-modify slot="tabs"/>
-            <button-action slot="action"      v-if="$route.name === config.addRoute"  label="SAVE"   icon="check" rounded text :loading="config.btnAdd.loading"    :disabled="!dirty" @click="storeProduct" />
-            <button-action slot="action" v-else-if="$route.name === config.editRoute" label="UPDATE" icon="check" rounded text :loading="config.btnUpdate.loading" :disabled="!dirty" @click="updateProduct"/>
+            <button-action slot="action"      v-if="$route.name === config.addRoute"  label="SAVE"   icon="save" rounded text outlined :loading="config.btnAdd.loading"    :disabled="!dirty" @click="storeProduct" />
+            <button-action slot="action" v-else-if="$route.name === config.editRoute" label="UPDATE" icon="save" rounded text outlined :loading="config.btnUpdate.loading" :disabled="!dirty" @click="updateProduct"/>
         </toolbar-main>
         <v-main class="secondary">
             <bg-secondary/>
