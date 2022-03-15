@@ -92,7 +92,7 @@ Route::group(['prefix' => 'shop'], function() {
 
 // GROUP :: EXPLORE
 Route::group(['prefix' => 'explore'], function() {
-    Route::get('/explore', [ExploreController::class, 'index']);
+    Route::get('/', [ExploreController::class, 'index']);
 });
 
 // MIDDLEWARE :: Auth Sanctum
