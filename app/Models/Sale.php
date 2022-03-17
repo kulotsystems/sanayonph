@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Sale extends Model
 {
@@ -38,6 +39,7 @@ class Sale extends Model
         'id',
         'order_id',
         'product_live',
+        'review',
         'created_at',
         'updated_at'
     ];
@@ -53,6 +55,7 @@ class Sale extends Model
         return $this->belongsTo(Order::class);
     }
 
+
     /****************************************************************************************************
      * Order's live product
      *
@@ -61,5 +64,16 @@ class Sale extends Model
     public function product_live()
     {
         return $this->belongsTo(Product::class, 'product_id');
+    }
+
+
+    /****************************************************************************************************
+     * Sale's review
+     *
+     * @return HasOne
+     */
+    public function review()
+    {
+        return $this->hasOne(Review::class);
     }
 }
