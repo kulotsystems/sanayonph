@@ -6,6 +6,8 @@
         <v-main class="yellow">
             <bg-yellow/>
             <v-container class="pa-2 pa-sm-3">
+<!--                <v-btn @click="config.reviewing=true" block color="primary" class="mb-2">TEMPORARY RATING ACTIVATOR</v-btn>-->
+
                 <v-row v-if="config.order != null">
                     <!-- LEFT COLUMN -->
                     <v-col cols="12" sm="6" md="6" class="pb-0" :class="{'pb-3': this.orderCancelled || this.orderDeclined}">
@@ -158,7 +160,14 @@
                         </v-btn>
                     </v-card-title>
                     <v-card-text>
-
+                        <div v-for="(sale, index) in config.order.sales" :key="sale.id">
+                            <v-rating
+                                v-model="config.order.sales[index].review.rating"
+                                background-color="primary lighten-3"
+                                color="primary"
+                                large
+                            />
+                        </div>
                     </v-card-text>
                     <v-card-actions>
                         <button-action
@@ -250,8 +259,7 @@
                     }
                 },
                 request: {
-                    cancel_remarks: '',
-                    review_remarks: ''
+                    cancel_remarks: ''
                 },
                 response: {
                     message: '',
@@ -428,6 +436,12 @@
                 if(!response) return;
 
                 this.config.order = response.data.order;
+
+                // process sale reviews
+                for(let i=0; i<this.config.order.sales.length; i++) {
+                    if(this.config.order.sales[i].review == null)
+                        this.config.order.sales[i].review = {};
+                }
             }).catch(errors => {
                 this.$store.commit('dialog/loader/hide');
                 this.$store.commit('dialog/error/show', errors);

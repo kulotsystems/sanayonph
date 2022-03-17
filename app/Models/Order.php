@@ -358,7 +358,7 @@ class Order extends Model
 
 
     /****************************************************************************************************
-     * Order details for buyer
+     * Order details for buyer or seller
      *
      * @param $person
      * @return Order
@@ -376,6 +376,10 @@ class Order extends Model
             $order->makeVisible('seller');
             $order->total;
             $order->makeVisible('total');
+            foreach ($order->sales as $sale) {
+                $sale->review;
+                $sale->makeVisible('review');
+            }
         }
         else if($person == 'seller') {
             $order->buyer;
