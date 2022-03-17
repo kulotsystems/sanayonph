@@ -21,6 +21,9 @@ Route::get('app/{vue_capture?}', function () {
     return view('sanayonph.index');
 })->where('vue_capture', '[\/\w\.-]*');
 
+Route::get('/about', function () {
+    return view('sanayonph.about');
+});
 
 Route::get('demo', [\App\Http\Controllers\DemoController::class, 'index']);
 
