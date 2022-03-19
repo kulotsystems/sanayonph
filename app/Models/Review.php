@@ -19,7 +19,6 @@ class Review extends Model
 
     protected $hidden = [
         'sale_id',
-        'user_id',
         'created_at',
         'updated_at'
     ];
@@ -33,5 +32,18 @@ class Review extends Model
     public function sale()
     {
         return $this->belongsTo(Sale::class);
+    }
+
+
+    /****************************************************************************************************
+     * Reviews details
+     *
+     * @return array
+     */
+    public function details()
+    {
+        return [
+
+        ];
     }
 }

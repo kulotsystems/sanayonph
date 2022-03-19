@@ -294,7 +294,6 @@ class OrderController extends Controller
                 if($sale->review == null) {
                     // create review
                     $review = new Review();
-                    $review->user_id = $user->id;
                     $review->sale_id = $sale->id;
                     $review->rating  = $rating;
                     $review->content = substr($content, 0, 300);
