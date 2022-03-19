@@ -456,6 +456,7 @@
                                         this.config.order.status = response.data.status;
                                         this.$store.commit('auth/data/purge', 'selfOrders');
                                         this.$store.commit('dialog/confirm/hide');
+                                        this.config.reviewing = true;
                                     }
                                 }).catch(errors => {
                                     this.config.btnCancel.loading = false;
