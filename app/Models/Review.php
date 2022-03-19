@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,7 +15,7 @@ class Review extends Model
 
     protected $fillable = [
         'rating',
-        'content'
+        'content',
     ];
 
     protected $hidden = [
@@ -42,8 +43,19 @@ class Review extends Model
      */
     public function details()
     {
-        return [
+        $user = $this->sale->order->user;
 
+        return [
+            'id'   => $this->id,
+            'user' => [
+                'full_name' => $user->name['full_name_1'],
+                'username'  => $user->username,
+                'avatar'    => $user->avatar
+            ],
+            'rating'         => $this->rating,
+            'content'       => $this->content,
+            'date_time'     => Carbon::parse($this->updated_at)->toDayDateTimeString(),
+            'product_label' => $this->sale->product_label
         ];
     }
 }

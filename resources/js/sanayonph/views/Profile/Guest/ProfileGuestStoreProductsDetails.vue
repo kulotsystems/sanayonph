@@ -5,8 +5,8 @@
         />
         <v-main>
             <bg-white/>
-            <v-container class="pa-2 pa-sm-3">
-                <v-row v-if="product != null">
+            <v-container class="pa-2 pa-sm-3" v-if="product != null">
+                <v-row>
                     <!-- PRODUCT IMAGES -->
                     <v-col cols="12" sm="6" md="6" class="pa-0 pa-sm-5 pa-md-6">
                         <v-card :flat="$vuetify.breakpoint.xs">
@@ -33,7 +33,7 @@
                     </v-col>
 
                     <!-- PRODUCT DATA -->
-                    <v-col cols="12" sm="6" md="6" class="py-3 px-4 pa-sm-4 pa-md-5">
+                    <v-col cols="12" sm="6" md="6" class="py-3 px-4 pa-sm-4 pa-md-5 pb-0">
                         <v-card flat class="transparent">
                             <v-card-title class="pa-1 secondary--text">
                                 <h4>{{ product.name }}</h4>
@@ -72,13 +72,35 @@
 
                                 <!-- Product Details  -->
                                 <div class="mt-4">
-                                    <h4 class="primary--text">CATEGORY</h4>
-                                    <p>
+                                    <h3 class="primary--text">CATEGORY</h3>
+                                    <p class="text-body-1 mb-6">
                                         {{ product.category.name }}
                                     </p>
 
-                                    <h4 class="primary--text">DESCRIPTION</h4>
-                                    <p style="white-space: pre-wrap;">{{ product.description }}</p>
+                                    <h3 class="primary--text">DESCRIPTION</h3>
+                                    <p class="text-body-1" style="white-space: pre-wrap;">{{ product.description }}</p>
+                                </div>
+                            </v-card-subtitle>
+                        </v-card>
+                    </v-col>
+                </v-row>
+
+                <v-row>
+                    <v-col cols="12">
+                        <v-card flat class="transparent">
+                            <v-card-subtitle class="pa-0 px-1">
+                                <!-- PRODUCT REVIEWS -->
+                                <h3 class="primary--text">REVIEW<span v-if="product.reviews.length > 1">S</span> ({{ Number(product.reviews.length).toLocaleString() }})</h3>
+
+                                <div class="mt-3" v-for="(review, index) in product.reviews" :key="review.id">
+                                    <product-review
+                                        :user="review.user"
+                                        :rating="review.rating"
+                                        :content="review.content"
+                                        :dateTime="review.date_time"
+                                        :product-label="review.product_label"
+                                    />
+                                    <v-divider class="my-2" v-if="index < product.reviews.length-1"></v-divider>
                                 </div>
                             </v-card-subtitle>
                         </v-card>
@@ -335,7 +357,8 @@
             'button-action'   : () => import('../../../components/buttons/ButtonAction.vue'),
             'store-link'      : () => import('../../../components/sheets/StoreLink.vue'),
             'product-overview': () => import('../../../components/sheets/ProductOverview.vue'),
-            'sale-computation': () => import('../../../components/sheets/SaleComputation.vue')
+            'sale-computation': () => import('../../../components/sheets/SaleComputation.vue'),
+            'product-review'  : () => import('../../../components/sheets/ProductReview.vue')
         },
         data() {
             return {
@@ -345,6 +368,7 @@
                     paymentMethods   : [],
                     serviceFees      : [],
                     shippingFees     : [],
+                    reviews          : [],
                     buying     : false,
                     checkingOut: false,
                     btnBuy: {
@@ -789,9 +813,9 @@
 
                     // commit product to vuex store module
                     this.$store.commit('store/addProduct', {
-                        username  : this.$route.params.username,
-                        store     : this.$route.params.store,
-                        product   : response.data.product
+                        username: this.$route.params.username,
+                        store   : this.$route.params.store,
+                        product : response.data.product
                     });
                     this.productCacheCTR += 1;
                 }).catch(errors => {

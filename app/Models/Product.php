@@ -47,7 +47,10 @@ class Product extends Model
         'address',
         'general_images',
         'variations',
-        'prices_stocks'
+        'prices_stocks',
+        'sales',
+        'sales_sold',
+        'sales_reviewed'
     ];
 
     public static $PRICE_STOCK_MODES = ['var1_only', 'var2_only', 'both_vars'];
@@ -105,6 +108,60 @@ class Product extends Model
     public function prices_stocks()
     {
         return $this->hasMany(PriceStock::class)->where('price_stock_mode', $this->price_stock_mode);
+    }
+
+
+    /****************************************************************************************************
+     * Product's sales
+     *
+     * @return HasMany
+     */
+    public function sales()
+    {
+        return $this->hasMany(Sale::class);
+    }
+
+
+    /****************************************************************************************************
+     * Product's sales sold
+     *
+     */
+    public function sales_sold()
+    {
+        return $this->whereHas('sales', function($query) {
+            $query->whereHas('order', function($query) {
+                $query
+                ->whereNull('cancelled_by_buyer_at')
+                ->whereNull('declined_by_seller_at')
+                ->whereNull('payment_declined_at');
+            });
+        });
+    }
+
+
+    /****************************************************************************************************
+     * Product's sales reviewed
+     *
+     */
+    public function sales_reviewed()
+    {
+        return $this->sales()->where(function($query) {
+            $query->has('review');
+        });
+    }
+
+
+    /****************************************************************************************************
+     * Product's reviews
+     *
+     */
+    public function reviews()
+    {
+        $reviews = [];
+        foreach ($this->sales_reviewed as $sales_reviewed) {
+            array_push($reviews, $sales_reviewed->review->details());
+        }
+        return $reviews;
     }
 
 

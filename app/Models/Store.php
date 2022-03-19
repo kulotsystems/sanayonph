@@ -98,6 +98,7 @@ class Store extends Model
         $product->makeVisible('variations');
         $product->prices_stocks;
         $product->makeVisible('prices_stocks');
+        $product->reviews = $product->reviews();
 
         $delivery_methods   = [];
         $payment_methods    = [];
