@@ -277,12 +277,14 @@ class OrderController extends Controller
         $user  = $request->mddlwr_user;
         $order = $request->mddlwr_order;
         for($i=0; $i<$order->sales->count(); $i++) {
-            if($request->reviews[$i]['rating'] <= 0 || $request->reviews[$i]['rating'] > 5) {
+            $rating  = $request->reviews[$i]['rating'];
+            $content = trim($request->reviews[$i]['content']);
+            if($rating <= 0 || $rating > 5) {
                 throw ValidationException::withMessages([
                     'rating['.($i+1).']' => ['Review rating should not be less than or equal to 0 or greater than 5.']
                 ]);
             }
-            else if(trim($request->reviews[$i]['content']) == '') {
+            else if($content == '') {
                 throw ValidationException::withMessages([
                     'content['.($i+1).']' => ['Review content should not be empty.']
                 ]);
@@ -294,14 +296,14 @@ class OrderController extends Controller
                     $review = new Review();
                     $review->user_id = $user->id;
                     $review->sale_id = $sale->id;
-                    $review->rating  = $request->reviews[$i]['rating'];
-                    $review->content = $request->reviews[$i]['content'];
+                    $review->rating  = $rating;
+                    $review->content = substr($content, 0, 300);
                     $review->save();
                 }
                 else {
                     // update review
-                    $sale->review->rating  = $request->reviews[$i]['rating'];
-                    $sale->review->content = $request->reviews[$i]['content'];
+                    $sale->review->rating  = $rating;
+                    $sale->review->content = substr($content, 0, 300);
                     $sale->review->update();
                 }
             }

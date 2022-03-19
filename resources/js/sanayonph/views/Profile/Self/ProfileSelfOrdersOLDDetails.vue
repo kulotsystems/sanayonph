@@ -361,6 +361,7 @@
                         if(!response) return;
 
                         this.config.order = response.data.order;
+                        this.initializeReviews();
                         this.$store.commit('auth/data/purge', 'selfOrders');
                         if(!receiving) {
                             this.config.btnCancelActivator.loading = false;
@@ -381,7 +382,6 @@
                     });
                 }
             },
-
 
             /****************************************************************************************************
              * METHOD: UPLOAD PHOTO
@@ -470,6 +470,21 @@
             },
 
             /****************************************************************************************************
+             * METHOD: INITIALIZE REVIEWS
+             * Initialize sale reviews
+             */
+            initializeReviews() {
+                for(let i=0; i<this.config.order.sales.length; i++) {
+                    if(this.config.order.sales[i].review == null) {
+                        this.config.order.sales[i].review = {
+                            rating : 5,
+                            content: ''
+                        };
+                    }
+                }
+            },
+
+            /****************************************************************************************************
              * METHOD: REVIEW ORDER
              * Review order after receive
              */
@@ -515,16 +530,7 @@
                 if(!response) return;
 
                 this.config.order = response.data.order;
-
-                // process sale reviews
-                for(let i=0; i<this.config.order.sales.length; i++) {
-                    if(this.config.order.sales[i].review == null) {
-                        this.config.order.sales[i].review = {
-                            rating : 5,
-                            content: ''
-                        };
-                    }
-                }
+                this.initializeReviews();
             }).catch(errors => {
                 this.$store.commit('dialog/loader/hide');
                 this.$store.commit('dialog/error/show', errors);
