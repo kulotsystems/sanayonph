@@ -23,6 +23,10 @@ export default {
         return api.post(`${url}/${id}`);
     },
 
+    buyerReview(id, request) {
+        return api.post(`${url}/${id}/review`, request);
+    },
+
     screenshot(id, request) {
         return api.post(`${url}/${id}/screenshot`, request);
     },

@@ -6,8 +6,6 @@
         <v-main class="yellow">
             <bg-yellow/>
             <v-container class="pa-2 pa-sm-3">
-<!--                <v-btn @click="config.reviewing=true" block color="primary" class="mb-2">TEMPORARY RATING ACTIVATOR</v-btn>-->
-
                 <v-row v-if="config.order != null">
                     <!-- LEFT COLUMN -->
                     <v-col cols="12" sm="6" md="6" class="pb-0" :class="{'pb-3': this.orderCancelled || this.orderDeclined}">
@@ -160,20 +158,58 @@
                         </v-btn>
                     </v-card-title>
                     <v-card-text>
-                        <div v-for="(sale, index) in config.order.sales" :key="sale.id">
-                            <v-rating
-                                v-model="config.order.sales[index].review.rating"
-                                background-color="primary lighten-3"
-                                color="primary"
-                                large
-                            />
-                        </div>
+                        <v-form ref="reviewForm">
+                            <div v-for="(sale, index) in config.order.sales" :key="sale.id">
+
+                                <!-- (Review) Store Link -->
+                                <store-link
+                                    :avatar="config.order.seller.avatar"
+                                    :username="config.order.seller.username"
+                                    :full-name="config.order.seller.name.full_name_1"
+                                    class="mt-4"
+                                    plain
+                                />
+
+                                <!-- (Review) Product Overview  -->
+                                <product-overview
+                                    :image="sale.product_image"
+                                    :name="sale.product_name"
+                                    :label="sale.product_label"
+                                    :price="sale.product_price"
+                                    :quantity="sale.quantity"
+                                />
+
+                                <!-- (Review) Rating  -->
+                                <h3 class="primary--text"><span class="font-weight-regular">Rating</span>: {{ Number(sale.review.rating).toFixed(1) }}</h3>
+                                <v-rating
+                                    v-model="sale.review.rating"
+                                    background-color="primary lighten-3"
+                                    color="primary"
+                                    x-large
+                                />
+
+                                <!-- (Review) Content  -->
+                                <h3 class="primary--text font-weight-thin mt-3">Review</h3>
+                                <v-textarea
+                                    v-model="sale.review.content"
+                                    :counter="config.review_remarks.max"
+                                    :rules="[$store.state.form.rules.required, $store.state.form.rules.max_chars(sale.review.content, config.review_remarks.max), $store.state.form.rules.feedback(response, `content[${index+1}]`)]"
+                                    @keyup="$store.dispatch('form/reset', [response, `content[${index+1}]`]).then(r => response)"
+                                    class="text-body-1 uppercase"
+                                    autocomplete="off"
+                                    auto-grow
+                                    outlined
+                                />
+
+                                <v-divider v-if="index < config.order.sales.length-1" class="mt-3"></v-divider>
+                            </div>
+                        </v-form>
                     </v-card-text>
                     <v-card-actions>
                         <button-action
                             label="SUBMIT REVIEW"
                             color="yellow"
-                            icon="close"
+                            icon="done"
                             class-name="primary--text text-body-1"
                             :loading="config.btnReview.loading"
                             block
@@ -184,7 +220,7 @@
                 </v-card>
             </v-bottom-sheet>
 
-            <!-- ORDER CONFIRM/RECEIVE ACTIONS -->
+            <!-- ORDER CONFIRM/RECEIVE/REVIEW ACTIONS -->
             <template v-if="config.order != null">
                 <v-bottom-navigation v-if="!paymentDeclined && !orderDeclined && !orderCancelled && !orderCompleted" class="block" grow app>
                     <button-action
@@ -210,6 +246,17 @@
                         @click="attempt(true)"
                     />
                 </v-bottom-navigation>
+                <v-bottom-navigation v-else-if="orderCompleted" class="block" grow app>
+                    <button-action
+                        label="Review Order"
+                        icon="star"
+                        class="text-body-1"
+                        rounded
+                        large
+                        text
+                        @click="config.reviewing = true"
+                    />
+                </v-bottom-navigation>
             </template>
         </v-main>
     </v-app>
@@ -231,6 +278,7 @@
             'order-total'      : () => import('../../../components/sheets/OrderTotal.vue'),
             'payment-overview' : () => import('../../../components/sheets/PaymentOverview.vue'),
             'delivery-overview': () => import('../../../components/sheets/DeliveryOverview.vue'),
+            'product-overview' : () => import('../../../components/sheets/ProductOverview.vue'),
             'button-action'    : () => import('../../../components/buttons/ButtonAction.vue')
         },
         data() {
@@ -426,7 +474,38 @@
              * Review order after receive
              */
             reviewOrder() {
-                alert('NO CODE HERE YET.');
+                let reviewForm = this.$refs.reviewForm;
+                if(!this.config.btnReview.loading && reviewForm.validate()) {
+                    this.config.btnReview.loading = true;
+
+                    // gather reviews
+                    let reviews = [];
+                    for(let i=0; i<this.config.order.sales.length; i++) {
+                        reviews.push(this.config.order.sales[i].review);
+                    }
+
+                    api_order.buyerReview(this.$route.params.order, {
+                        reviews: reviews
+                    }).then(response => {
+                        this.config.btnReview.loading = false;
+                        if(!response) return;
+
+                        if(response.data.reviewed) {
+                            this.config.reviewing = false;
+                            this.$store.commit('dialog/message/show', {
+                                title: 'Review Submitted',
+                                prompt: 'Thank you for updating your review for this order!'
+                            });
+                        }
+
+                    }).catch(errors => {
+                        this.config.btnReview.loading = false;
+                        this.$store.commit('dialog/error/show', errors);
+                        this.response.message = errors.response.data.message;
+                        this.response.errors  = errors.response.data.errors;
+                        reviewForm.validate();
+                    });
+                }
             }
         },
         created() {
@@ -439,8 +518,12 @@
 
                 // process sale reviews
                 for(let i=0; i<this.config.order.sales.length; i++) {
-                    if(this.config.order.sales[i].review == null)
-                        this.config.order.sales[i].review = {};
+                    if(this.config.order.sales[i].review == null) {
+                        this.config.order.sales[i].review = {
+                            rating : 5,
+                            content: ''
+                        };
+                    }
                 }
             }).catch(errors => {
                 this.$store.commit('dialog/loader/hide');

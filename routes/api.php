@@ -151,10 +151,11 @@ Route::middleware(['auth:sanctum'])->group(function() {
             Route::middleware(['verify-user-self'])->group(function() {
                 Route::get('/', [OrderController::class, 'buyer_index']);
                 Route::middleware(['verify-order'])->group(function() {
-                    Route::get ('/{id}',            [OrderController::class, 'buyer_show'])->where('id', '[0-9]+');
-                    Route::put ('/{id}',            [OrderController::class, 'buyer_cancel'])->where('id', '[0-9]+');
-                    Route::post('/{id}',            [OrderController::class, 'buyer_receive'])->where('id', '[0-9]+');
+                    Route::get ('/{id}'           , [OrderController::class, 'buyer_show'])->where('id', '[0-9]+');
+                    Route::put ('/{id}'           , [OrderController::class, 'buyer_cancel'])->where('id', '[0-9]+');
+                    Route::post('/{id}'           , [OrderController::class, 'buyer_receive'])->where('id', '[0-9]+');
                     Route::post('/{id}/screenshot', [OrderController::class, 'buyer_screenshot'])->where('id', '[0-9]+');
+                    Route::post('/{id}/review'    , [OrderController::class, 'buyer_review'])->where('id', '[0-9]+');
                 });
             });
         });
