@@ -157,7 +157,13 @@ class User extends Authenticatable
      */
     public function seller_info()
     {
-        return $this->only('id', 'username', 'name', 'avatar');
+        $info  = $this->only('id', 'username', 'name', 'avatar');
+        $store = $this->store;
+        if($store->name != null)
+            $info['name']['full_name_1'] = $store->name;
+        if($store->avatar != null)
+            $info['avatar'] = $store->avatar;
+        return $info;
     }
 
 

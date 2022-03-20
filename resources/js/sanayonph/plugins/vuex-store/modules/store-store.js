@@ -26,8 +26,17 @@ export default {
         loaded: (state) => {
             return state.loaded
         },
+        name: (state) => {
+            let name = state.user.name.full_name_1;
+            if(state.user.store.name != null)
+                name = state.user.store.name;
+            return name;
+        },
         avatar: (state) => {
-            return state.user.avatar != null ? state.user.avatar : '';
+            let avatar = state.user.avatar != null ? state.user.avatar : '';
+            if(state.user.store.avatar != null)
+                avatar = state.user.store.avatar;
+            return avatar;
         },
         stores: (state) => {
             return state.stores;

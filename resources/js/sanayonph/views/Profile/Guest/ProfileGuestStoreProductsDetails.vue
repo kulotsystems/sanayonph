@@ -65,7 +65,7 @@
                                 <store-link
                                     :avatar="$store.getters['store/avatar']"
                                     :username="$store.getters['store/user'].username"
-                                    :full-name="$store.getters['store/user'].name.full_name_1"
+                                    :full-name="$store.getters['store/name']"
                                     nav-back
                                     class="mt-4"
                                 />
