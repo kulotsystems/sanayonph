@@ -23,7 +23,7 @@
                             <v-tab-item id="photo">
                                 <v-card>
                                     <v-toolbar class="grey lighten-5" dense flat>
-                                        <span class="v-toolbar-text text-body font-weight-light grey--text">PROFILE PHOTO</span>
+                                        <span class="v-toolbar-text text-body font-weight-light grey--text">PHOTO</span>
                                     </v-toolbar>
                                     <v-card-text>
                                         <profile-self-edit-photo/>

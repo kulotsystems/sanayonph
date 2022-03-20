@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Image;
+use function Symfony\Component\HttpClient\Response\select;
 
 class UserController extends Controller
 {
@@ -54,7 +55,7 @@ class UserController extends Controller
             'gcash_name'        => 'required|string|max:128',
             'gcash_number'      => 'required|digits:11',
             'store_name'        => 'string|nullable',
-            'store_description' => 'string|nullable|max:300|'
+            'store_description' => 'string|nullable|max:300'
         ]);
 
         // update user account info
@@ -76,15 +77,16 @@ class UserController extends Controller
 
 
     /****************************************************************************************************
-     * Updated User's Avatar
+     * Updated Avatar
      *
      * @param Request $request
+     * @param string $target - 'user' | 'store'
      * @return Response
      */
-    public function update_avatar(Request $request)
+    private static function update_avatar(Request $request, $target)
     {
         $request->validate([
-            'file' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'file'   => 'required|image|mimes:jpg,jpeg,png|max:2048'
         ]);
 
         // extract image from request
@@ -94,7 +96,7 @@ class UserController extends Controller
         $user = Auth::user();
 
         // upload the image on /public/uploads/images/avatars/256
-        $file_path = $image->storePubliclyAs('images/avatars/256', 'avtr-'. Str::kebab($user->last_name) . '-' . Str::kebab($user->first_name) . '-' . $user->id .'-'.time().'.png', ['disk' => 'uploads']);
+        $file_path = $image->storePubliclyAs('images/avatars/256', 'avtr-' . $target . '-' . Str::kebab($user->last_name) . '-' . Str::kebab($user->first_name) . '-' . $user->id .'-'.time().'.png', ['disk' => 'uploads']);
 
         $file_name = basename($file_path);
 
@@ -111,15 +113,47 @@ class UserController extends Controller
             $constraint->aspectRatio();
         })->save(public_path('uploads/images/avatars/064/') . $file_name);
 
-        // update user on the database
-        $user = Auth::user();
-        $user->avatar = $file_name;
-        $user->update();
+        // update user avatar
+        if($target == 'user') {
+            $user->avatar = $file_name;
+            $user->update();
+        }
+
+        // or update store avatar
+        else if($target == 'store') {
+            $store = $user->store;
+            $store->avatar = $file_name;
+            $store->update();
+        }
 
         // return response
         return response([
             'file_name' => $file_name
         ]);
+    }
+
+
+    /****************************************************************************************************
+     * Updated User Avatar
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function update_user_avatar(Request $request)
+    {
+        return self::update_avatar($request, 'user');
+    }
+
+
+    /****************************************************************************************************
+     * Updated Store Avatar
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function update_store_avatar(Request $request)
+    {
+        return self::update_avatar($request, 'store');
     }
 
 

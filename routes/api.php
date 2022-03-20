@@ -101,11 +101,12 @@ Route::middleware(['auth:sanctum'])->group(function() {
     // GROUP :: USER
     Route::group(['prefix' => 'user'], function() {
         Route::middleware(['verify-user-self'])->group(function() {
-            Route::get   ('/'        , [UserController::class, 'get_user']);
-            Route::delete('/'        , [UserController::class, 'sign_out']);
-            Route::post  ('/personal', [UserController::class, 'update_personal']);
-            Route::post  ('/account' , [UserController::class, 'update_account']);
-            Route::post  ('/avatar'  , [UserController::class, 'update_avatar']);
+            Route::get   ('/'            , [UserController::class, 'get_user']);
+            Route::delete('/'            , [UserController::class, 'sign_out']);
+            Route::post  ('/personal'    , [UserController::class, 'update_personal']);
+            Route::post  ('/account'     , [UserController::class, 'update_account']);
+            Route::post  ('/user-avatar' , [UserController::class, 'update_user_avatar']);
+            Route::post  ('/store-avatar', [UserController::class, 'update_store_avatar']);
         });
     });
 

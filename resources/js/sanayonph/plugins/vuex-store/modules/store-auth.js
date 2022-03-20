@@ -42,6 +42,9 @@ export default {
         avatar: (state) => {
             return state.user.avatar != null ? state.user.avatar : '';
         },
+        storeAvatar: (state) => {
+            return state.user.store.avatar != null ? state.user.store.avatar : '';
+        },
         toggleTry: (state) => {
             return state.toggleTry
         },
@@ -70,7 +73,10 @@ export default {
             state.loaded = true;
         },
         setAvatar(state, avatar) {
-            state.user.avatar = avatar
+            state.user.avatar = avatar;
+        },
+        setStoreAvatar(state, avatar) {
+            state.user.store.avatar = avatar;
         },
         skipIntro(state) {
             state.showIntro = false;

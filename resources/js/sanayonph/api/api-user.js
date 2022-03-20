@@ -11,8 +11,12 @@ export default {
         return api.post(`${url}/account`, request);
     },
 
-    updateAvatar(request) {
-        return api.post(`${url}/avatar`, request);
+    updateUserAvatar(request) {
+        return api.post(`${url}/user-avatar`, request);
+    },
+
+    updateStoreAvatar(request) {
+        return api.post(`${url}/store-avatar`, request);
     },
 
     signOut() {
