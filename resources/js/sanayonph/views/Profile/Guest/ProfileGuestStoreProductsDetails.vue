@@ -63,9 +63,9 @@
 
                                 <!-- Store Link -->
                                 <store-link
-                                    :avatar="$store.getters['store/avatar']"
+                                    :avatar="$store.getters['store/storeAvatar']"
                                     :username="$store.getters['store/user'].username"
-                                    :full-name="$store.getters['store/name']"
+                                    :full-name="$store.getters['store/storeName']"
                                     nav-back
                                     class="mt-4"
                                 />
