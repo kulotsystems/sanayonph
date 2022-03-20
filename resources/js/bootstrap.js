@@ -61,5 +61,4 @@ if(window.location.hostname === 'www.sanayonph.com') {
             fjs.parentNode.insertBefore(js, fjs);
         }(document, 'script', 'facebook-jssdk'));
     } catch(e) {}
-
 }
