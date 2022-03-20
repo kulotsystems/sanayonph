@@ -43,7 +43,7 @@
                 </v-col>
 
                 <!-- Store Name -->
-                <v-col cols="12" sm="6">
+                <v-col cols="12">
                     <v-text-field
                         label="Store Name"
                         v-model="request.store_name"
