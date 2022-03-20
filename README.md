@@ -2,9 +2,11 @@
 Source code for sanayonph.com.
 
 ### Development Environment
-* PHP `^8.0`
-* Node `^16.14`
-* Composer `^2.2.7`
+| Tool      | Version   |
+| --------- | --------- |
+| PHP       | `^8.0`    |
+| Node      | `^16.14`  |
+| Composer  | `^2.2.7`  |
 
 ### Development Setup
 1. Clone or download this repository.
@@ -44,16 +46,9 @@ Source code for sanayonph.com.
    
     
 5. Access the created local dev server and sign-up for an account using any of the following mobile numbers:
-    * 09000000000
-    * 09111111111
-    * 09222222222
-    * 09333333333
-    * 09444444444
-    * 09555555555
-    * 09666666666
-    * 09777777777
-    * 09888888888
-    * 09999999999
+    
+    `09000000000` `09111111111` `09222222222` `09333333333` `09444444444`
+    `09555555555` `09666666666` `09777777777` `09888888888` `09999999999`
     
     The verification code can be found in the `otps` database table.
 
