@@ -23,6 +23,7 @@ class Store extends Model
         'slug',
         'name',
         'description',
+        'avatar',
         'verified_at',
         'merchant_code'
     ];
