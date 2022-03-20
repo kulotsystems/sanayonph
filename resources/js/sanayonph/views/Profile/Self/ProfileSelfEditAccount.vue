@@ -1,6 +1,8 @@
 <template>
     <div>
         <v-form ref="accountForm">
+
+            <!-- GCASH -->
             <v-row class="mt-3 mb-3" dense>
                 <v-col cols="12">
                     <h4 class="font-weight-thin primary--text mb-0 mt-2">GCASH</h4>
@@ -33,6 +35,39 @@
                     />
                 </v-col>
             </v-row>
+
+            <!-- STORE -->
+            <v-row class="mt-3 mb-3" dense>
+                <v-col cols="12">
+                    <h4 class="font-weight-thin primary--text mb-0 mt-2">STORE</h4>
+                </v-col>
+
+                <!-- Store Name -->
+                <v-col cols="12" sm="6">
+                    <v-text-field
+                        label="Store Name"
+                        v-model="request.store_name"
+                        :rules="[$store.state.form.rules.feedback(response,'store_name')]"
+                        @keyup="$store.dispatch('form/reset', [response, 'store_name']).then(r => response)"
+                        :disabled="config.btnSave.loading"
+                    />
+                </v-col>
+
+                <!-- Store Description -->
+                <v-col cols="12">
+                    <v-textarea
+                        label="Store Description"
+                        v-model="request.store_description"
+                        :counter="config.store_description.max"
+                        :rules="[$store.state.form.rules.max_chars(request.store_description, config.store_description.max), $store.state.form.rules.feedback(response, 'store_description')]"
+                        @keyup="$store.dispatch('form/reset', [response, 'store_description']).then(r => response)"
+                        class="text-body-1 uppercase"
+                        autocomplete="off"
+                        auto-grow
+                    />
+                </v-col>
+            </v-row>
+
         </v-form>
 
         <v-row class="mt-3" dense>
@@ -68,11 +103,16 @@
                     },
                     btnSave: {
                         loading: false
+                    },
+                    store_description: {
+                        max: 300
                     }
                 },
                 request: {
-                    gcash_name  : this.$store.getters['auth/user'].gcash_name,
-                    gcash_number: this.$store.getters['auth/user'].gcash_number
+                    gcash_name       : this.$store.getters['auth/user'].gcash_name,
+                    gcash_number     : this.$store.getters['auth/user'].gcash_number,
+                    store_name       : this.$store.getters['auth/user'].store.name,
+                    store_description: this.$store.getters['auth/user'].store.description
                 },
                 response: {
                     message: '',

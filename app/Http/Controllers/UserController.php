@@ -51,14 +51,23 @@ class UserController extends Controller
     public function update_account(Request $request)
     {
         $request->validate([
-            'gcash_name'    => 'required|string|max:128',
-            'gcash_number'  => 'required|digits:11'
+            'gcash_name'        => 'required|string|max:128',
+            'gcash_number'      => 'required|digits:11',
+            'store_name'        => 'string|nullable',
+            'store_description' => 'string|nullable|max:300|'
         ]);
 
+        // update user account info
         $user = Auth::user();
         $user->gcash_name   = Str::upper($request->gcash_name);
         $user->gcash_number = $request->gcash_number;
         $user->update();
+
+        // update store info
+        $store = $user->store;
+        $store->name        = $request->store_name;
+        $store->description = $request->store_description;
+        $store->update();
 
         return response([
             'user' => $user
