@@ -20,54 +20,62 @@
                     </v-col>
                 </v-row>
 
-                <!-- HAS SEARCHED PRODUCTS -->
-                <div v-if="config.products.length > 0">
-                    <v-row>
-                        <v-col class="pa-1 pa-sm-2 pb-sm-0">
-                            <v-card color="primary">
-                                <v-toolbar flat dense>
-                                    <v-toolbar-title class="primary--text">
-                                        <v-icon color="primary">{{ $store.getters['icon/state'].product }}</v-icon>
-                                        <span class="text-button">Product<template v-if="config.products.length > 1">s</template> ({{  config.products.length }})</span>
-                                    </v-toolbar-title>
-                                </v-toolbar>
-                            </v-card>
-                        </v-col>
-                    </v-row>
-                    <transition-group name="list-complete" tag="v-row">
-                        <v-col class="pa-1 pt-1 pa-sm-2 pt-sm-2" cols="6" sm="4" md="3" v-for="(product, j) in config.products" :key="product.id" :class="{ 'list-complete-item': config.animation }">
-                            <card-product
-                                :product="product"
-                                :category="product.category"
-                                :store="product.category.store"
-                                :user="product.user"
-                            />
-                        </v-col>
-                    </transition-group>
-                </div>
+                <template v-if="request.query.trim() !== '' && request.query === request.lastQuery && config.products.length <= 0 && config.stores.length <= 0">
+                    <dialog-info v-if="config.loaded">
+                        <span class="text-h6">No records found for <span class="primary--text">"{{ request.query }}"</span></span>
+                    </dialog-info>
+                </template>
+                <template v-else>
 
-                <!-- HAS SEARCHED STORES -->
-                <div v-if="config.stores.length > 0" :class="{'mt-6': config.products.length > 0}">
-                    <v-row>
-                        <v-col class="pa-1 pa-sm-2 pb-sm-0">
-                            <v-card color="primary">
-                                <v-toolbar flat dense>
-                                    <v-toolbar-title class="primary--text">
-                                        <v-icon color="primary">storefront</v-icon>
-                                        <span class="text-button">Store<template v-if="config.stores.length > 1">s</template> ({{  config.stores.length }})</span>
-                                    </v-toolbar-title>
-                                </v-toolbar>
-                            </v-card>
-                        </v-col>
-                    </v-row>
-                    <transition-group name="list-complete" tag="v-row">
-                        <v-col class="pa-1 pt-1 pa-sm-2 pt-sm-2" cols="6" sm="4" md="3" v-for="(store, index) in config.stores" :key="store.store.id" :class="{ 'list-complete-item': config.animation }">
-                            <card-store
-                                :store="store"
-                            />
-                        </v-col>
-                    </transition-group>
-                </div>
+                    <!-- HAS SEARCHED PRODUCTS -->
+                    <div v-if="config.products.length > 0">
+                        <v-row>
+                            <v-col class="pa-1 pa-sm-2 pb-sm-0">
+                                <v-card color="primary">
+                                    <v-toolbar flat dense>
+                                        <v-toolbar-title class="primary--text">
+                                            <v-icon color="primary">{{ $store.getters['icon/state'].product }}</v-icon>
+                                            <span class="text-button">Product<template v-if="config.products.length > 1">s</template> ({{  config.products.length }})</span>
+                                        </v-toolbar-title>
+                                    </v-toolbar>
+                                </v-card>
+                            </v-col>
+                        </v-row>
+                        <transition-group name="list-complete" tag="v-row">
+                            <v-col class="pa-1 pt-1 pa-sm-2 pt-sm-2" cols="6" sm="4" md="3" v-for="(product, j) in config.products" :key="product.id" :class="{ 'list-complete-item': config.animation }">
+                                <card-product
+                                    :product="product"
+                                    :category="product.category"
+                                    :store="product.category.store"
+                                    :user="product.user"
+                                />
+                            </v-col>
+                        </transition-group>
+                    </div>
+
+                    <!-- HAS SEARCHED STORES -->
+                    <div v-if="config.stores.length > 0" :class="{'mt-6': config.products.length > 0}">
+                        <v-row>
+                            <v-col class="pa-1 pa-sm-2 pb-sm-0">
+                                <v-card color="primary">
+                                    <v-toolbar flat dense>
+                                        <v-toolbar-title class="primary--text">
+                                            <v-icon color="primary">storefront</v-icon>
+                                            <span class="text-button">Store<template v-if="config.stores.length > 1">s</template> ({{  config.stores.length }})</span>
+                                        </v-toolbar-title>
+                                    </v-toolbar>
+                                </v-card>
+                            </v-col>
+                        </v-row>
+                        <transition-group name="list-complete" tag="v-row">
+                            <v-col class="pa-1 pt-1 pa-sm-2 pt-sm-2" cols="6" sm="4" md="3" v-for="(store, index) in config.stores" :key="store.store.id" :class="{ 'list-complete-item': config.animation }">
+                                <card-store
+                                    :store="store"
+                                />
+                            </v-col>
+                        </transition-group>
+                    </div>
+                </template>
             </v-container>
         </v-main>
         <nav-bottom/>
@@ -82,6 +90,7 @@
         components: {
             'bg-yellow'   : () => import('../../components/backgrounds/BackgroundYellow.vue'),
             'dialogs'     : () => import('../../components/dialogs/Dialogs.vue'),
+            'dialog-info' : () => import('../../components/dialogs/DialogInfo.vue'),
             'toolbar-main': () => import('../../components/toolbars/ToolbarMain.vue'),
             'nav-bottom'  : () => import('../../components/navs/NavBottom.vue'),
             'card-product': () => import('../../components/cards/CardProduct.vue'),
@@ -116,6 +125,7 @@
              * Execute search
              */
             search(onload) {
+                this.config.loaded = false;
                 this.$store.commit('dialog/loader/show');
                 api_explore.query(this.request.query).then(response => {
                     this.$store.commit('dialog/loader/hide');
@@ -134,6 +144,7 @@
                     this.request.lastQuery = this.request.query;
                     this.config.stores     = response.data.stores;
                     this.config.products   = response.data.products;
+                    this.config.loaded     = true;
                 }).catch(errors => {
                     this.$store.commit('dialog/loader/hide');
                     this.$store.commit('dialog/error/show', errors);
