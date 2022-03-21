@@ -24,7 +24,7 @@
                         },
                         {
                             label: 'Explore',
-                            icon : 'star',
+                            icon : 'search',
                             route: {
                                 name: 'explore'
                             }
