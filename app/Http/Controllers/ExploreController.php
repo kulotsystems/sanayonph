@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\Store;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -20,6 +21,28 @@ class ExploreController extends Controller
             'query' => 'string|max:255|nullable'
         ]);
         $q = $request['query'];
+
+
+        // search products
+        $products = [];
+        if($q != null) {
+            $result = Product::query()
+                ->where('is_published', 1)
+                ->where('name' , 'like', '%'.$q.'%')
+                ->orWhere('description' , 'like', '%'.$q.'%')
+                ->get();
+
+            foreach ($result as $product) {
+                $category = $product->category;
+                $store    = $category->store;
+                $store->makeHidden('user');
+
+                $product->category;
+                $product->makeVisible('category');
+                $product['username'] = $product->category->store->user->username;
+                array_push($products, $product);
+            }
+        }
 
         // search stores
         $stores = [];
@@ -44,15 +67,9 @@ class ExploreController extends Controller
             }
         }
 
-        // search products
-        $products = [];
-        if($q != null) {
-
-        }
-
         return response([
-            'stores'    => $stores,
-            'products'  => $products
+            'products' => $products,
+            'stores'   => $stores
         ]);
     }
 }
