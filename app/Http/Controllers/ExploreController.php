@@ -39,7 +39,7 @@ class ExploreController extends Controller
 
                 $product->category;
                 $product->makeVisible('category');
-                $product['username'] = $product->category->store->user->username;
+                $product['user'] = $product->category->store->user->seller_info();
                 array_push($products, $product);
             }
         }
