@@ -1,9 +1,7 @@
 <template>
     <v-app>
         <dialogs/>
-        <toolbar-main>
-
-        </toolbar-main>
+        <toolbar-main/>
         <v-main class="yellow">
             <bg-yellow/>
             <v-container class="pa-4 pa-sm-5">
@@ -28,7 +26,7 @@
                 <!-- HAS RETURNED STORES -->
                 <template v-if="config.stores.length > 0">
                     <v-row>
-                        <v-col class="pa-1 pa-sm-2 pb-sm-0" :class="{'mt-6': i > 0}">
+                        <v-col class="pa-1 pa-sm-2 pb-sm-0">
                             <v-card color="primary">
                                 <v-toolbar flat>
                                     <v-toolbar-title class="primary--text">
@@ -68,10 +66,8 @@
                 </template>
 
             </v-container>
-
-            <div v-show="isValidSearch == false" id="tempobg" ></div>
         </v-main>
-        <nav-bottom></nav-bottom>
+        <nav-bottom/>
     </v-app>
 </template>
 

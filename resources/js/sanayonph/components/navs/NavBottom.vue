@@ -28,23 +28,36 @@
                             route: {
                                 name: 'explore'
                             }
-                        },
-                        {
-                            label: 'Me',
-                            icon : 'person',
-                            route: {
-                                name  : 'profile',
-                                params: {
-                                    username: this.$store.getters['auth/user'].username
-                                }
-                            }
                         }
                     ]
                 }
             }
         },
         computed: {},
-        methods : {}
+        methods : {},
+        mounted() {
+            if(this.$store.getters['auth/user']) {
+                this.config.navItems.push({
+                    label: 'Me',
+                    icon : 'person',
+                    route: {
+                        name  : 'profile',
+                        params: {
+                            username: this.$store.getters['auth/user'].username
+                        }
+                    }
+                });
+            }
+            else {
+                this.config.navItems.push({
+                    label: 'Sign In',
+                    icon : 'person',
+                    route: {
+                        name  : 'sign-in'
+                    }
+                });
+            }
+        }
     }
 </script>
 

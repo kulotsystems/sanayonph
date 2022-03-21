@@ -1,10 +1,7 @@
 <template>
     <v-app>
         <dialogs/>
-        <toolbar-main v-if="$store.getters['auth/user']"/>
-        <toolbar-main v-else
-            :customBackRoute="{name: 'sign-in'}"
-        />
+        <toolbar-main/>
         <v-main class="yellow">
             <bg-yellow/>
             <v-container class="pa-4 pa-sm-5">
@@ -47,7 +44,7 @@
                 </transition-group>
             </v-container>
         </v-main>
-        <nav-bottom v-if="$store.getters['auth/user']"></nav-bottom>
+        <nav-bottom/>
     </v-app>
 </template>
 
