@@ -143,5 +143,9 @@
 </script>
 
 <style scoped>
-
+    .one-line {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 </style>
