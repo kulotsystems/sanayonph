@@ -1,5 +1,5 @@
-## sanayonph.com
-Source code for sanayonph.com.
+## sanayonph
+A shopping app that caters for local sellers and buyers and promotes locally-produced products.
 
 ### Development Environment
 | Tool      | Version   |
